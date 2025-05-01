@@ -16,6 +16,24 @@
                 "DEFAULT_SUBTASKS": "5",
                 "DEFAULT_PRIORITY": "medium"
             }
+        },
+        "appwrite": {
+            "command": "uvx",
+            "args": [
+                "mcp-server-appwrite",
+                "--databases",
+                "--users",
+                "--teams",
+                "--storage",
+                "--functions",
+                "--messaging",
+                "--locale",
+                "--avatars"
+            ],
+            "env": {
+                "APPWRITE_API_KEY": "standard_7f0a6eeaaf2466a5ea4415a6d10c852c4f9ad077d0355edfa0ee8be6ef21be8bef1c287ff9027c881466d5a9e87477b7fa056851787e7c699bfdc59a708b2bbe2ef3f6b8f16df0005aa92e68b9d808c038697d1fffb3b3743987241c247d74c85c2b17e19608e36032b70b0715976738b50b39216f2d606d065c8d1f49416a5c",
+                "APPWRITE_PROJECT_ID": "6811f9090020cdcb835a"
+            }
         }
     }
 }
