@@ -1,3 +1,4 @@
+import { MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
@@ -37,7 +38,7 @@ export default function TabLayout() {
         name="explore"
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons name="explore" size={28} color={color} />,
         }}
       />
     </Tabs>
