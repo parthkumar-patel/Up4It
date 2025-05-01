@@ -111,9 +111,9 @@ export default function ExploreScreen() {
           <MaterialIcons 
             name="explore" 
             size={100} 
-            color="#808080" 
-            style={styles.headerImage} 
-          />
+          color="#808080"
+          style={styles.headerImage}
+        />
         </View>
       }>
       <ThemedView style={styles.titleContainer}>
@@ -151,7 +151,7 @@ export default function ExploreScreen() {
           <MaterialIcons name="map" size={48} color="#808080" />
           <ThemedText style={styles.webPlaceholderText}>
             Map view is not available on the web version.
-          </ThemedText>
+        </ThemedText>
         </ThemedView>
       )}
       
@@ -222,11 +222,11 @@ export default function ExploreScreen() {
               <MaterialIcons name="people" size={48} color="#808080" />
               <ThemedText style={styles.emptyText}>
                 No students found nearby.
-              </ThemedText>
+        </ThemedText>
               {Platform.OS !== 'web' && (
                 <ThemedText style={styles.emptySubtext}>
                   Try expanding your search radius or checking back later.
-                </ThemedText>
+            </ThemedText>
               )}
             </ThemedView>
           )}

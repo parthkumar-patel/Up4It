@@ -19,8 +19,33 @@ export const typography = Typography;
 export const spacing = Spacing;
 export const animations = Animations;
 
+// Define theme structure
+export interface ThemeMode {
+  colors: typeof LIGHT_THEME;
+  typography: typeof Typography.TEXT_STYLES;
+  fonts: typeof Typography.FONTS;
+  fontSizes: typeof Typography.FONT_SIZES;
+  fontWeights: typeof Typography.FONT_WEIGHTS;
+  lineHeights: typeof Typography.LINE_HEIGHTS;
+  spacing: typeof Spacing.SPACING;
+  borderRadius: typeof Spacing.BORDER_RADIUS;
+  shadows: typeof Spacing.SHADOWS;
+  blur: typeof Spacing.BLUR;
+  grid: typeof Spacing.GRID;
+  breakpoints: typeof Spacing.BREAKPOINTS;
+  animations: typeof Animations.ANIMATION_PRESETS;
+  duration: typeof Animations.DURATION;
+  easing: typeof Animations.EASING;
+  isDark: boolean;
+}
+
+export interface Theme {
+  light: ThemeMode;
+  dark: ThemeMode;
+}
+
 // Export an integrated theme object
-export default {
+const theme: Theme = {
   light: {
     colors: LIGHT_THEME,
     typography: Typography.TEXT_STYLES,
@@ -57,4 +82,6 @@ export default {
     easing: Animations.EASING,
     isDark: true,
   }
-}; 
+};
+
+export default theme; 

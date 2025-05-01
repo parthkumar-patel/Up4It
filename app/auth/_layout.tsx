@@ -28,7 +28,9 @@ function AuthLayoutContent() {
           },
           headerTintColor: theme.colors.text,
           headerTitleStyle: {
-            ...theme.typography.h4,
+            fontFamily: theme.typography.h4.fontFamily,
+            fontSize: theme.typography.h4.fontSize,
+            fontWeight: '600',
           },
           contentStyle: {
             backgroundColor: theme.colors.background,
