@@ -22,6 +22,8 @@ const TextField = ({
   onBlur,
   onFocus,
   disabled = false,
+  showHideBelow = false,
+  showHideStyle,
   ...props
 }) => {
   const { theme } = useTheme();
@@ -148,10 +150,22 @@ const TextField = ({
         {...props}
       />
 
-      {secureTextEntry && (
+      {secureTextEntry && !showHideBelow && (
         <Pressable
           onPress={toggleSecureEntry}
           style={styles.secureToggle}
+          hitSlop={{ top: 10, right: 10, bottom: 5, left: 10 }}
+        >
+          <Text style={{ color: theme.colors.secondaryText }}>
+            {isSecureVisible ? "Hide" : "Show"}
+          </Text>
+        </Pressable>
+      )}
+
+      {secureTextEntry && showHideBelow && (
+        <Pressable
+          onPress={toggleSecureEntry}
+          style={[{ alignSelf: "center", marginTop: 8 }, showHideStyle]}
           hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
         >
           <Text style={{ color: theme.colors.secondaryText }}>

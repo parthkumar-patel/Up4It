@@ -24,7 +24,7 @@ function AuthLayoutContent() {
       <Stack
         screenOptions={{
           headerStyle: {
-            backgroundColor: theme.colors.background,
+            backgroundColor: '#0B0D12',
           },
           headerTintColor: theme.colors.text,
           headerTitleStyle: {
@@ -48,6 +48,7 @@ function AuthLayoutContent() {
           name="login"
           options={{
             title: 'Sign In',
+            headerShown: false,
             animation: 'slide_from_right',
           }}
         />
@@ -55,6 +56,7 @@ function AuthLayoutContent() {
           name="register"
           options={{
             title: 'Create Account',
+            headerShown: false,
             animation: 'slide_from_right',
           }}
         />
@@ -62,6 +64,7 @@ function AuthLayoutContent() {
           name="forgot-password"
           options={{
             title: 'Reset Password',
+            headerShown: false,
             animation: 'slide_from_right',
           }}
         />
@@ -69,10 +72,11 @@ function AuthLayoutContent() {
           name="verify-email"
           options={{
             title: 'Verify Email',
+            headerShown: false,
             animation: 'slide_from_right',
           }}
         />
       </Stack>
     </>
   );
-} 
+}

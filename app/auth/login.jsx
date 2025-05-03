@@ -1,16 +1,12 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { useTheme } from "../../src/components/common/theme/ThemeProvider";
-import GlassCard from "../../src/components/common/ui/GlassCard";
 import NeumorphicButton from "../../src/components/common/ui/NeumorphicButton";
 import TextField from "../../src/components/common/ui/TextField";
 import { auth } from "../../src/lib/appwrite";
@@ -28,11 +24,11 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Validate form
   const validateForm = () => {
     const newErrors = {};
-
     if (!email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
@@ -40,36 +36,31 @@ export default function Login() {
     } else if (!auth.validateUniversityEmail(email)) {
       newErrors.email = "Please use your university email";
     }
-
     if (!password) {
       newErrors.password = "Password is required";
     } else if (password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   // Handle login
   const handleLogin = async () => {
+    setErrorMessage("");
     if (!validateForm()) return;
-
     setIsLoading(true);
-
     try {
       await auth.login(email, password);
       router.replace("/");
     } catch (error) {
       let errorMessage = "Login failed. Please try again.";
-
-      if (error.message.includes("Invalid credentials")) {
+      if (error.message?.includes("Invalid credentials")) {
         errorMessage = "Invalid email or password";
-      } else if (error.message.includes("not verified")) {
+      } else if (error.message?.includes("not verified")) {
         errorMessage = "Please verify your email before logging in";
       }
-
-      Alert.alert("Login Error", errorMessage);
+      setErrorMessage(errorMessage);
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
@@ -77,73 +68,44 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
-        <GlassCard style={styles.card}>
-          <Text style={[styles.title, { color: theme.colors.text }]}>
-            Welcome Back
-          </Text>
-
-          <Text
-            style={[styles.subtitle, { color: theme.colors.secondaryText }]}
-          >
-            Sign in with your university email
-          </Text>
-
-          <View style={styles.form}>
-            <TextField
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="your.name@student.ubc.ca"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              error={errors.email}
-            />
-
-            <TextField
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              placeholder="Your password"
-              error={errors.password}
-            />
-
-            <TouchableOpacity
-              onPress={() => router.push("/auth/forgot-password")}
-              style={styles.forgotPassword}
-            >
-              <Text style={{ color: theme.colors.primary }}>
-                Forgot Password?
-              </Text>
-            </TouchableOpacity>
-
-            <NeumorphicButton
-              label={isLoading ? "Signing In..." : "Sign In"}
-              onPress={handleLogin}
-              disabled={isLoading}
-              style={styles.loginButton}
-            />
-          </View>
-
-          <View style={styles.footer}>
-            <Text style={{ color: theme.colors.secondaryText }}>
-              Don't have an account?
-            </Text>
-            <TouchableOpacity onPress={() => router.push("/auth/register")}>
-              <Text style={{ color: theme.colors.primary, fontWeight: "600" }}>
-                {" Sign Up"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </GlassCard>
-      </ScrollView>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.centeredContent}>
+        <Text style={styles.bigTitle}>Up4It</Text>
+        <Text style={styles.subtitle}>Sign in to find and create spontaneous hangouts with fellow UBC students.</Text>
+        <View style={styles.formFields}>
+          <TextField
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            error={errors.email}
+            style={styles.input}
+          />
+          <TextField
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholder="Password"
+            error={errors.password}
+            style={styles.input}
+          />
+          {errorMessage ? (
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          ) : null}
+        </View>
+      </View>
+      <View style={styles.bottomButtonContainer}>
+        <NeumorphicButton
+          label={isLoading ? "Signing In..." : "Sign In"}
+          onPress={handleLogin}
+          disabled={isLoading}
+          style={styles.signInButtonBig}
+          textStyle={styles.signInButtonText}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -151,39 +113,62 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0B0D12',
+    justifyContent: 'space-between',
   },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 20,
-    justifyContent: "center",
+  centeredContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
   },
-  card: {
-    padding: 24,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 8,
-    textAlign: "center",
+  bigTitle: {
+    fontSize: 56,
+    fontWeight: '400', // Regular weight for a modern look
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 16,
+    fontFamily: 'Inter', // Use Inter if available, or system default
+    letterSpacing: 0.5,
   },
   subtitle: {
+    color: '#ccc',
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 40,
+  },
+  formFields: {
+    width: '100%',
+    maxWidth: 400,
+  },
+  input: {
+    marginBottom: 20,
+    borderRadius: 16,
+  },
+  errorMessage: {
+    color: '#ff4c4c',
     fontSize: 16,
-    marginBottom: 32,
-    textAlign: "center",
+    textAlign: 'center',
+    marginTop: 8,
   },
-  form: {
-    marginBottom: 24,
+  bottomButtonContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 32,
+    width: '100%',
   },
-  forgotPassword: {
-    alignSelf: "flex-end",
-    marginTop: 4,
-    marginBottom: 24,
+  signInButtonBig: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    paddingVertical: 18,
+    alignItems: 'center',
+    width: '100%',
+    shadowColor: 'transparent',
   },
-  loginButton: {
-    marginBottom: 16,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
+  signInButtonText: {
+    color: '#0B0D12',
+    fontSize: 20,
+    fontWeight: '600',
+    textAlign: 'center',
+    letterSpacing: 0.2,
   },
 });
