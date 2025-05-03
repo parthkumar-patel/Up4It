@@ -1,11 +1,6 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import React, { useRef, useState } from "react";
+import { Animated, Easing, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "../../src/components/common/theme/ThemeProvider";
 import NeumorphicButton from "../../src/components/common/ui/NeumorphicButton";
 import TextField from "../../src/components/common/ui/TextField";
@@ -25,6 +20,71 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
+  const translateY = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const animatingRef = useRef(false);
+  const passwordRef = useRef(null);
+
+  const runSmoothAnimation = (toValueY, toValueFade, cb) => {
+    if (animatingRef.current) return;
+    animatingRef.current = true;
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: toValueY,
+        duration: 1200,
+        easing: Easing.bezier(0.22, 1, 0.36, 1),
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: toValueFade,
+        duration: 900,
+        easing: Easing.bezier(0.22, 1, 0.36, 1),
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      animatingRef.current = false;
+      if (cb) cb();
+    });
+  };
+
+  const handleEmailFocus = () => {
+    setEmailFocused(true);
+    if (!isInputFocused) {
+      setIsInputFocused(true);
+      runSmoothAnimation(-180, 0);
+    }
+  };
+
+  const handleEmailBlur = () => {
+    setEmailFocused(false);
+    if (!passwordFocused) {
+      runSmoothAnimation(0, 1, () => {
+        setIsInputFocused(false);
+        fadeAnim.setValue(1);
+      });
+    }
+  };
+
+  const handlePasswordFocus = () => {
+    setPasswordFocused(true);
+    if (!isInputFocused) {
+      setIsInputFocused(true);
+      runSmoothAnimation(-180, 0);
+    }
+  };
+
+  const handlePasswordBlur = () => {
+    setPasswordFocused(false);
+    if (!emailFocused) {
+      runSmoothAnimation(0, 1, () => {
+        setIsInputFocused(false);
+        fadeAnim.setValue(1);
+      });
+    }
+  };
 
   // Validate form
   const validateForm = () => {
@@ -69,43 +129,70 @@ export default function Login() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.centeredContent}>
-        <Text style={styles.bigTitle}>Up4It</Text>
-        <Text style={styles.subtitle}>Sign in to find and create spontaneous hangouts with fellow UBC students.</Text>
-        <View style={styles.formFields}>
-          <TextField
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            error={errors.email}
-            style={styles.input}
-          />
-          <TextField
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            placeholder="Password"
-            error={errors.password}
-            style={styles.input}
-          />
-          {errorMessage ? (
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
-          ) : null}
-        </View>
-      </View>
-      <View style={styles.bottomButtonContainer}>
-        <NeumorphicButton
-          label={isLoading ? "Signing In..." : "Sign In"}
-          onPress={handleLogin}
-          disabled={isLoading}
-          style={styles.signInButtonBig}
-          textStyle={styles.signInButtonText}
-        />
-      </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={32}
+      >
+        <Animated.View style={[styles.centeredContent, { transform: [{ translateY }] }]}>
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <Text style={styles.bigTitle}>Up4It</Text>
+            <Text style={styles.subtitle}>Sign in to find and create spontaneous hangouts with fellow UBC students.</Text>
+          </Animated.View>
+          <View style={styles.formFields}>
+            <TextField
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              error={errors.email}
+              style={styles.input}
+              onFocus={handleEmailFocus}
+              onBlur={handleEmailBlur}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordRef?.current?.focus && passwordRef.current.focus();
+              }}
+            />
+            <TextField
+              ref={passwordRef}
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              placeholder="Password"
+              error={errors.password}
+              style={styles.input}
+              onFocus={handlePasswordFocus}
+              onBlur={handlePasswordBlur}
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                Keyboard.dismiss();
+                handlePasswordBlur();
+              }}
+            />
+            {errorMessage ? (
+              <Text style={styles.errorMessage}>{errorMessage}</Text>
+            ) : null}
+            <View style={{ alignItems: 'center', marginTop: 16 }}>
+              <NeumorphicButton
+                label={isLoading ? "Signing In..." : "Sign In"}
+                onPress={handleLogin}
+                disabled={isLoading}
+                style={isInputFocused ? styles.signInButtonSmall : styles.signInButtonBig}
+                textStyle={isInputFocused ? styles.signInButtonTextSmall : styles.signInButtonText}
+              />
+            </View>
+          </View>
+        </Animated.View>
+        {!isInputFocused && (
+          <Animated.View style={[styles.bottomButtonContainer, { opacity: fadeAnim }]}>
+            {/* Empty to preserve layout, button is now above */}
+          </Animated.View>
+        )}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -167,6 +254,21 @@ const styles = StyleSheet.create({
   signInButtonText: {
     color: '#0B0D12',
     fontSize: 20,
+    fontWeight: '600',
+    textAlign: 'center',
+    letterSpacing: 0.2,
+  },
+  signInButtonSmall: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    paddingVertical: 12,
+    alignItems: 'center',
+    width: '100%',
+    shadowColor: 'transparent',
+  },
+  signInButtonTextSmall: {
+    color: '#0B0D12',
+    fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
     letterSpacing: 0.2,
