@@ -41,6 +41,20 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons name="explore" size={28} color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="events"
+        options={{
+          title: 'Events',
+          tabBarIcon: ({ color }) => <MaterialIcons name="event" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <MaterialIcons name="person" size={28} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }

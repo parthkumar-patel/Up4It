@@ -1,3 +1,6 @@
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -5,16 +8,12 @@ import {
   ActivityIndicator,
   Alert,
   Image,
-  SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useTheme } from "../../../src/components/common/theme/ThemeProvider";
-import GlassCard from "../../../src/components/common/ui/GlassCard";
-import NeumorphicButton from "../../../src/components/common/ui/NeumorphicButton";
 import InterestTag from "../../../src/components/profile/InterestTag";
 import { auth, profile } from "../../../src/lib/appwrite";
 
@@ -111,42 +110,31 @@ export default function ProfileScreen() {
   // Show loading state
   if (loading) {
     return (
-      <View
-        style={[
-          styles.loadingContainer,
-          { backgroundColor: theme.colors.background },
-        ]}
-      >
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={[styles.loadingText, { color: theme.colors.text }]}>
-          Loading profile...
-        </Text>
+      <View style={[styles.loadingContainer, { backgroundColor: "#111" }]}>
+        <ActivityIndicator size="large" color="#4285F4" />
+        <Text style={styles.loadingText}>Loading profile...</Text>
       </View>
     );
   }
 
   // If we have profile data, show profile
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: "#000", dark: "#000" }}
+      headerImage={<View />}
     >
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.contentContainer}
-      >
+      <ThemedView style={styles.container}>
         {/* Header section */}
         <View style={styles.header}>
-          <Text style={[styles.title, { color: theme.colors.text }]}>
-            Your Profile
-          </Text>
+          <ThemedText style={styles.title}>Your Profile</ThemedText>
 
           <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <MaterialIcons name="logout" size={24} color={theme.colors.text} />
+            <MaterialIcons name="logout" size={24} color="#FFF" />
           </TouchableOpacity>
         </View>
 
         {/* Profile content */}
-        <GlassCard style={styles.profileCard}>
+        <View style={styles.profileCard}>
           {/* Profile photos */}
           {profileData?.photoUrls?.length > 0 ? (
             <View style={styles.photoContainer}>
@@ -188,97 +176,64 @@ export default function ProfileScreen() {
               )}
             </View>
           ) : (
-            <View
-              style={[
-                styles.profilePhoto,
-                styles.photoPlaceholder,
-                { backgroundColor: theme.colors.neumorphicBackground },
-              ]}
-            >
-              <MaterialIcons
-                name="person"
-                size={80}
-                color={isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)"}
-              />
-              <Text
-                style={[
-                  styles.photoPlaceholderText,
-                  { color: theme.colors.secondaryText },
-                ]}
-              >
-                No photos added
-              </Text>
+            <View style={styles.photoPlaceholder}>
+              <MaterialIcons name="person" size={80} color="#808080" />
             </View>
           )}
 
-          {/* Profile info */}
+          {/* Profile Info */}
           <View style={styles.profileInfo}>
-            <Text style={[styles.name, { color: theme.colors.text }]}>
-              {profileData?.name || "Anonymous"}
-            </Text>
+            <ThemedText style={styles.name}>
+              {profileData?.name || "Unknown User"}
+            </ThemedText>
+            <ThemedText style={styles.bio}>
+              {profileData?.bio || "No bio yet"}
+            </ThemedText>
 
-            <Text style={[styles.bio, { color: theme.colors.secondaryText }]}>
-              {profileData?.bio || "No bio available"}
-            </Text>
-          </View>
-
-          {/* Interests */}
-          {profileData?.interests?.length > 0 && (
-            <View style={styles.interestsContainer}>
-              <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                Interests
-              </Text>
-
-              <View style={styles.interestTags}>
-                {profileData.interests.map((interest, index) => (
-                  <InterestTag
-                    key={`interest-${index}`}
-                    label={interest}
-                    variant="primary"
-                  />
-                ))}
+            {/* Interests */}
+            {profileData?.interests && profileData.interests.length > 0 && (
+              <View style={styles.interestsSection}>
+                <ThemedText style={styles.sectionTitle}>Interests</ThemedText>
+                <View style={styles.interestTags}>
+                  {profileData.interests.map((interest, index) => (
+                    <InterestTag key={index} label={interest} />
+                  ))}
+                </View>
               </View>
-            </View>
-          )}
+            )}
 
-          {/* Edit button */}
-          <NeumorphicButton
-            label="Edit Profile"
-            onPress={handleEditProfile}
-            style={styles.editButton}
-            icon={
-              <MaterialIcons
-                name="edit"
-                size={18}
-                color={theme.colors.buttonText}
-              />
-            }
-          />
-        </GlassCard>
-      </ScrollView>
-    </SafeAreaView>
+            {/* Edit Profile Button */}
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={handleEditProfile}
+            >
+              <ThemedText style={styles.editButtonText}>
+                Edit Profile
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ThemedView>
+    </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#111",
   },
   loadingText: {
-    marginTop: 16,
+    marginTop: 12,
     fontSize: 16,
+    color: "#FFF",
   },
-  scrollView: {
+  container: {
     flex: 1,
-  },
-  contentContainer: {
-    padding: 20,
-    paddingBottom: 40,
+    padding: 16,
+    backgroundColor: "#111",
   },
   header: {
     flexDirection: "row",
@@ -287,32 +242,27 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
+    color: "#FFF",
   },
   logoutButton: {
     padding: 8,
   },
   profileCard: {
-    padding: 0,
+    borderRadius: 12,
+    marginBottom: 24,
     overflow: "hidden",
+    backgroundColor: "#1E1E1E",
   },
   photoContainer: {
-    position: "relative",
     width: "100%",
-    height: 300,
+    aspectRatio: 1,
+    position: "relative",
   },
   profilePhoto: {
     width: "100%",
-    height: 300,
-  },
-  photoPlaceholder: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  photoPlaceholderText: {
-    marginTop: 16,
-    fontSize: 16,
+    height: "100%",
   },
   photoNavigation: {
     position: "absolute",
@@ -322,44 +272,63 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    paddingVertical: 8,
+    padding: 12,
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
   photoNavButton: {
     padding: 8,
   },
   photoCounter: {
     color: "white",
-    fontSize: 14,
-    fontWeight: "600",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  photoPlaceholder: {
+    width: "100%",
+    aspectRatio: 1,
+    backgroundColor: "#2A2A2A",
+    justifyContent: "center",
+    alignItems: "center",
   },
   profileInfo: {
-    padding: 20,
+    padding: 16,
   },
   name: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 8,
+    color: "#FFF",
   },
   bio: {
     fontSize: 16,
-    lineHeight: 24,
+    marginBottom: 16,
+    lineHeight: 22,
+    color: "#CCC",
   },
-  interestsContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+  interestsSection: {
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 12,
+    color: "#FFF",
   },
   interestTags: {
     flexDirection: "row",
     flexWrap: "wrap",
+    gap: 8,
   },
   editButton: {
-    margin: 20,
-    marginTop: 10,
+    backgroundColor: "#4285F4",
+    borderRadius: 30,
+    paddingVertical: 12,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  editButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

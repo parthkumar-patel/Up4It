@@ -1,9 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
-import NearbyUserCard from '@/components/common/NearbyUserCard';
 import Spinner from '@/components/common/Spinner';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -105,147 +104,102 @@ export default function ExploreScreen() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <View style={styles.headerOverlay}>
-          <MaterialIcons 
-            name="explore" 
-            size={100} 
-          color="#808080"
-          style={styles.headerImage}
-        />
-        </View>
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore Nearby</ThemedText>
-      </ThemedView>
-      
-      <ThemedText style={styles.subtitle}>
-        Find students and activities near you, with privacy by default.
-      </ThemedText>
-      
-      {/* Map and Geofence Section - Native Only */}
-      {Platform.OS !== 'web' ? (
-        <>
-          {mapReady && LocationMap && (
-            <LocationMap
-              style={styles.map}
-              radiusKm={5}
-              onPermissionRequest={handlePermissionRequest}
-              onNearbyUsersFound={handleNearbyUsersFound}
-            />
-          )}
-          
-          {userLocation && GeofenceManager && (
-            <GeofenceManager
-              initialCenter={userLocation}
-              initialRadius={100}
-              onGeofenceCreated={handleGeofenceCreated}
-              onGeofenceRemoved={handleGeofenceRemoved}
-              style={styles.geofenceManager}
-            />
-          )}
-        </>
-      ) : (
-        <ThemedView style={styles.webPlaceholder}>
-          <MaterialIcons name="map" size={48} color="#808080" />
-          <ThemedText style={styles.webPlaceholderText}>
-            Map view is not available on the web version.
-        </ThemedText>
+      headerBackgroundColor={{ light: '#000', dark: '#000' }}
+      headerImage={<View />}
+    >
+      <ThemedView style={styles.contentContainer}>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Explore Nearby</ThemedText>
         </ThemedView>
-      )}
-      
-      {/* Privacy Information */}
-      <Collapsible 
-        title="Privacy Information" 
-        initialCollapsed={true}
-        style={styles.collapsibleSection}
-      >
-        <ThemedText>
-          Your location is only stored for 24 hours and is only shared with other students
-          when you're actively using the app. You can delete your location data at any time.
+        
+        <ThemedText style={styles.subtitle}>
+          Find students and activities near you, with privacy by default.
         </ThemedText>
-        <ThemedText style={styles.privacyPoint}>
-          • Location is automatically deleted after 24 hours
-        </ThemedText>
-        <ThemedText style={styles.privacyPoint}>
-          • Only university students can see your location
-        </ThemedText>
-        <ThemedText style={styles.privacyPoint}>
-          • You can delete all location data with one tap
-        </ThemedText>
-        <ThemedText style={styles.privacyPoint}>
-          • You control when your location is shared
-        </ThemedText>
-      </Collapsible>
-      
-      {/* Nearby Students Section */}
-      <ThemedView style={styles.sectionHeader}>
-        <ThemedText type="subtitle">Nearby Students</ThemedText>
-        {!isLoading && Platform.OS !== 'web' && (
-          <MaterialIcons 
-            name="refresh" 
-            size={24} 
-            color="#4285F4" 
-            style={styles.refreshIcon} 
-            onPress={refreshNearbyUsers}
-          />
+        
+        {/* Map and Geofence Section - Native Only */}
+        {Platform.OS !== 'web' ? (
+          <>
+            {mapReady && LocationMap && (
+              <LocationMap
+                style={styles.map}
+                radiusKm={5}
+                onPermissionRequest={handlePermissionRequest}
+                onNearbyUsersFound={handleNearbyUsersFound}
+              />
+            )}
+            
+            {userLocation && GeofenceManager && (
+              <GeofenceManager
+                initialCenter={userLocation}
+                initialRadius={100}
+                onGeofenceCreated={handleGeofenceCreated}
+                onGeofenceRemoved={handleGeofenceRemoved}
+                style={styles.geofenceManager}
+              />
+            )}
+          </>
+        ) : (
+          <ThemedView style={styles.webPlaceholder}>
+            <MaterialIcons name="map" size={48} color="#808080" />
+            <ThemedText style={styles.webPlaceholderText}>
+              Map view is not available on the web version.
+          </ThemedText>
+          </ThemedView>
+        )}
+        
+        {/* Privacy Information */}
+        <Collapsible 
+          title="Privacy Information" 
+          initialCollapsed={true}
+          style={styles.collapsibleSection}
+        >
+          <ThemedText>
+            Your location is only stored for 24 hours and is only shared with other students
+            when you're actively using the app. You can delete your location data at any time.
+          </ThemedText>
+          <ThemedText style={styles.privacyPoint}>
+            • Location is automatically deleted after 24 hours
+          </ThemedText>
+          <ThemedText style={styles.privacyPoint}>
+            • Only university students can see your location
+          </ThemedText>
+          <ThemedText style={styles.privacyPoint}>
+            • You can delete all location data with one tap
+          </ThemedText>
+          <ThemedText style={styles.privacyPoint}>
+            • You control when your location is shared
+          </ThemedText>
+        </Collapsible>
+        
+        {/* Nearby Students Section */}
+        <ThemedView style={styles.sectionHeader}>
+          <ThemedText type="subtitle">Nearby Students</ThemedText>
+          {!isLoading && Platform.OS !== 'web' && (
+            <MaterialIcons 
+              name="refresh" 
+              size={24} 
+              color="#4285F4" 
+              style={styles.refreshIcon} 
+              onPress={refreshNearbyUsers}
+            />
+          )}
+        </ThemedView>
+        
+        {/* Loading indicator */}
+        {isLoading && (
+          <View style={styles.loadingContainer}>
+            <Spinner size="large" color="#4285F4" />
+            <ThemedText>Looking for students nearby...</ThemedText>
+          </View>
         )}
       </ThemedView>
-      
-      {/* Loading indicator */}
-      {isLoading && (
-        <View style={styles.loadingContainer}>
-          <Spinner size="large" color="#4285F4" />
-          <ThemedText>Looking for students nearby...</ThemedText>
-        </View>
-      )}
-      
-      {/* Nearby users list */}
-      {!isLoading && (
-        <>
-          {nearbyUsers.length > 0 ? (
-            <FlatList
-              data={nearbyUsers}
-              keyExtractor={(item) => item.$id}
-              renderItem={({ item }) => (
-                <NearbyUserCard
-                  user={item}
-                  onPress={handleUserSelect}
-                />
-              )}
-              scrollEnabled={false}
-              style={styles.usersList}
-            />
-          ) : (
-            <ThemedView style={styles.emptyContainer}>
-              <MaterialIcons name="people" size={48} color="#808080" />
-              <ThemedText style={styles.emptyText}>
-                No students found nearby.
-        </ThemedText>
-              {Platform.OS !== 'web' && (
-                <ThemedText style={styles.emptySubtext}>
-                  Try expanding your search radius or checking back later.
-            </ThemedText>
-              )}
-            </ThemedView>
-          )}
-        </>
-      )}
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerOverlay: {
-    position: 'absolute',
-    bottom: -60,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-  headerImage: {
-    opacity: 0.5,
+  contentContainer: {
+    padding: 16,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -293,25 +247,6 @@ const styles = StyleSheet.create({
   },
   refreshIcon: {
     padding: 4,
-  },
-  usersList: {
-    marginBottom: 16,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    padding: 24,
-    marginBottom: 16,
-  },
-  emptyText: {
-    fontSize: 16,
-    marginTop: 12,
-    textAlign: 'center',
-  },
-  emptySubtext: {
-    fontSize: 14,
-    marginTop: 8,
-    textAlign: 'center',
-    opacity: 0.7,
   },
   loadingContainer: {
     alignItems: 'center',
