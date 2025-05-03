@@ -5,18 +5,17 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { useTheme } from "../../../src/components/common/theme/ThemeProvider";
-import GlassCard from "../../../src/components/common/ui/GlassCard";
 import NeumorphicButton from "../../../src/components/common/ui/NeumorphicButton";
 import TextField from "../../../src/components/common/ui/TextField";
-import InterestSelector from "../../../src/components/profile/InterestSelector";
 import PhotoSelector from "../../../src/components/profile/PhotoSelector";
+import InterestSelector from "../../../src/components/profile/InterestSelector";
 import { auth, profile } from "../../../src/lib/appwrite";
 
 /**
@@ -24,33 +23,48 @@ import { auth, profile } from "../../../src/lib/appwrite";
  * Allows users to edit their existing profile
  */
 export default function ProfileEditScreen() {
-  const { theme } = useTheme();
   const router = useRouter();
 
+  // Up4It style guide theme
+  const theme = {
+    colors: {
+      background: "#1A1A1A",
+      card: "#2A2A2A",
+      text: "#FFFFFF",
+      secondaryText: "#F0F0F0",
+      accentBlue: "#4F46E5",
+      accentTeal: "#38B2AC",
+      border: "#3C3C3C",
+      error: "#F55655",
+      inputBG: "#2A2A2A",
+      inputLabel: "#F0F0F0",
+      inputFocus: "#38B2AC",
+      tagBG: "#23232A",
+      tagText: "#FFFFFF",
+    },
+  };
+
   // Profile state
-  const [profileData, setProfileData] = useState(null);
   const [profileId, setProfileId] = useState(null);
 
   // Form state
   const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
   const [bio, setBio] = useState("");
   const [photos, setPhotos] = useState([]);
   const [primaryPhotoIndex, setPrimaryPhotoIndex] = useState(0);
   const [interests, setInterests] = useState([]);
-  const [originalPhotoUrls, setOriginalPhotoUrls] = useState([]);
-
-  // Form validation errors
-  const [errors, setErrors] = useState({});
+  const [allInterests, setAllInterests] = useState([]);
 
   // UI state
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [currentStep, setCurrentStep] = useState(1); // 1: Basic Info, 2: Photos, 3: Interests
+  const [loadingProfile, setLoadingProfile] = useState(false);
+  const [errors, setErrors] = useState({});
 
   // Load profile data on mount
   useEffect(() => {
     loadProfileData();
-  }, []);
+  }, [loadProfileData]);
 
   // Load existing profile data
   const loadProfileData = async () => {
@@ -76,19 +90,16 @@ export default function ProfileEditScreen() {
       }
 
       // Set profile data
-      setProfileData(userProfile);
       setProfileId(userProfile.$id);
 
       // Set form values
       setName(userProfile.name || "");
+      setLocation(userProfile.location || "");
       setBio(userProfile.bio || "");
+      setPhotos(userProfile.photoUrls || []);
+      setPrimaryPhotoIndex(userProfile.primaryPhotoIndex || 0);
       setInterests(userProfile.interests || []);
-
-      if (userProfile.photoUrls?.length > 0) {
-        setPhotos(userProfile.photoUrls);
-        setOriginalPhotoUrls(userProfile.photoUrls);
-        setPrimaryPhotoIndex(userProfile.primaryPhotoIndex || 0);
-      }
+      setAllInterests(userProfile.allInterests || []);
     } catch (error) {
       console.error("Error loading profile:", error);
       Alert.alert("Error", "Failed to load profile. Please try again.");
@@ -97,125 +108,49 @@ export default function ProfileEditScreen() {
     }
   };
 
-  // Validate the current step
-  const validateStep = () => {
+  // Validate the form
+  const validateForm = () => {
     const newErrors = {};
-
-    switch (currentStep) {
-      case 1:
-        // Basic info validation
-        if (!name.trim()) {
-          newErrors.name = "Name is required";
-        }
-
-        if (!bio.trim()) {
-          newErrors.bio = "Please write a short bio";
-        } else if (bio.length < 10) {
-          newErrors.bio = "Bio must be at least 10 characters";
-        } else if (bio.length > 150) {
-          newErrors.bio = "Bio must be less than 150 characters";
-        }
-        break;
-
-      case 2:
-        // Photo validation
-        if (photos.length === 0) {
-          newErrors.photos = "Please add at least one photo";
-        }
-        break;
-
-      case 3:
-        // Interest validation
-        if (interests.length === 0) {
-          newErrors.interests = "Please select at least one interest";
-        }
-        break;
+    if (!name.trim()) {
+      newErrors.name = "Name is required";
     }
-
+    if (!location.trim()) {
+      newErrors.location = "Location is required";
+    }
+    if (!bio.trim()) {
+      newErrors.bio = "Please write a short bio";
+    } else if (bio.length < 10) {
+      newErrors.bio = "Bio must be at least 10 characters";
+    } else if (bio.length > 150) {
+      newErrors.bio = "Bio must be less than 150 characters";
+    }
+    if (photos.length === 0) {
+      newErrors.photos = "At least one photo is required";
+    }
+    if (interests.length === 0) {
+      newErrors.interests = "Select at least one interest";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle next step
-  const handleNextStep = () => {
-    if (validateStep()) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  // Handle previous step
-  const handlePrevStep = () => {
-    setCurrentStep(currentStep - 1);
-  };
-
-  // Find which photos were removed
-  const getRemovedPhotos = () => {
-    return originalPhotoUrls.filter((url) => !photos.includes(url));
-  };
-
-  // Find which photos were added
-  const getNewPhotos = () => {
-    return photos.filter((url) => !originalPhotoUrls.includes(url));
-  };
-
   // Handle form submission
-  const handleSubmit = async () => {
-    if (!validateStep()) return;
+  const handleSave = async () => {
+    if (!validateForm()) {
+      return;
+    }
 
     setIsLoading(true);
 
     try {
-      // Find which photos were removed and delete them
-      const removedPhotos = getRemovedPhotos();
-
-      for (const photoUrl of removedPhotos) {
-        await profile.deleteProfilePhoto(photoUrl);
-      }
-
-      // Upload new photos
-      const newPhotoUris = getNewPhotos();
-      const updatedPhotos = [
-        ...photos.filter((url) => originalPhotoUrls.includes(url)),
-      ];
-
-      for (const photoUri of newPhotoUris) {
-        try {
-          // Get file from URI
-          const response = await fetch(photoUri);
-          const blob = await response.blob();
-
-          // Ensure blob has proper file properties
-          const fileType = blob.type || "image/jpeg";
-          const fileName = `profile_${Date.now()}.${
-            fileType.split("/")[1] || "jpg"
-          }`;
-          const file = new File([blob], fileName, { type: fileType });
-
-          // Upload to Appwrite
-          const fileUrl = await profile.uploadProfilePhoto(file);
-          updatedPhotos.push(fileUrl);
-        } catch (error) {
-          console.error("Error uploading photo:", error);
-          Alert.alert(
-            "Upload Error",
-            "Failed to upload one of your photos. Try again or select a different image."
-          );
-        }
-      }
-
-      // Adjust primary photo index if needed
-      let newPrimaryIndex = primaryPhotoIndex;
-      if (updatedPhotos.length > 0 && newPrimaryIndex >= updatedPhotos.length) {
-        newPrimaryIndex = 0;
-      }
-
       // Update profile
       await profile.updateProfile(profileId, {
         name,
+        location,
         bio,
+        photoUrls: photos,
+        primaryPhotoIndex,
         interests,
-        photoUrls: updatedPhotos,
-        primaryPhotoIndex: newPrimaryIndex,
       });
 
       Alert.alert("Success", "Your profile has been updated!", [
@@ -232,45 +167,6 @@ export default function ProfileEditScreen() {
     }
   };
 
-  // Handle profile deletion
-  const handleDeleteProfile = () => {
-    Alert.alert(
-      "Delete Profile",
-      "Are you sure you want to delete your profile? This action cannot be undone.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: confirmDeleteProfile,
-        },
-      ]
-    );
-  };
-
-  // Confirm and execute profile deletion
-  const confirmDeleteProfile = async () => {
-    setIsLoading(true);
-
-    try {
-      await profile.deleteProfile();
-      Alert.alert("Success", "Your profile has been deleted.", [
-        {
-          text: "OK",
-          onPress: () => router.replace("/(tabs)"),
-        },
-      ]);
-    } catch (error) {
-      console.error("Error deleting profile:", error);
-      Alert.alert("Error", `Failed to delete your profile: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // Show loading state
   if (loadingProfile) {
     return (
@@ -280,7 +176,7 @@ export default function ProfileEditScreen() {
           { backgroundColor: theme.colors.background },
         ]}
       >
-        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <ActivityIndicator size="large" color={theme.colors.accentBlue} />
         <Text style={[styles.loadingText, { color: theme.colors.text }]}>
           Loading profile...
         </Text>
@@ -289,175 +185,85 @@ export default function ProfileEditScreen() {
   }
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <KeyboardAvoidingView
-        style={styles.keyboardAvoidingView}
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
       >
         <View style={styles.header}>
-          <Text style={[styles.title, { color: theme.colors.text }]}>
-            Edit Profile
-          </Text>
-          <Text style={[styles.stepIndicator, { color: theme.colors.primary }]}>
-            Step {currentStep} of 3
-          </Text>
+          <Text style={[styles.title, { color: theme.colors.text }]}>Edit Profile</Text>
+          <Pressable onPress={() => router.back()} hitSlop={10}>
+            <Text style={[styles.cancelBtn, { color: theme.colors.accentBlue }]}>Cancel</Text>
+          </Pressable>
         </View>
-
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.contentContainer}
-          keyboardShouldPersistTaps="handled"
-        >
-          <GlassCard style={styles.card}>
-            {/* Step 1: Basic Info */}
-            {currentStep === 1 && (
-              <View style={styles.stepContainer}>
-                <Text style={[styles.stepTitle, { color: theme.colors.text }]}>
-                  Basic Information
-                </Text>
-
-                <TextField
-                  label="Name"
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="Your full name"
-                  error={errors.name}
-                  style={styles.input}
-                />
-
-                <TextField
-                  label="Bio"
-                  value={bio}
-                  onChangeText={setBio}
-                  placeholder="Write a short bio about yourself"
-                  error={errors.bio}
-                  style={styles.input}
-                  maxLength={150}
-                  multiline
-                />
-
-                <Text
-                  style={[
-                    styles.characterCount,
-                    { color: theme.colors.secondaryText },
-                  ]}
-                >
-                  {bio.length}/150 characters
-                </Text>
-              </View>
-            )}
-
-            {/* Step 2: Photos */}
-            {currentStep === 2 && (
-              <View style={styles.stepContainer}>
-                <Text style={[styles.stepTitle, { color: theme.colors.text }]}>
-                  Profile Photos
-                </Text>
-
-                <Text
-                  style={[
-                    styles.stepDescription,
-                    { color: theme.colors.secondaryText },
-                  ]}
-                >
-                  Add up to 5 photos to showcase yourself. Your first photo will
-                  be your main profile picture.
-                </Text>
-
-                <PhotoSelector
-                  photos={photos}
-                  onPhotosChange={setPhotos}
-                  primaryPhotoIndex={primaryPhotoIndex}
-                  onPrimaryPhotoChange={setPrimaryPhotoIndex}
-                  style={styles.photoSelector}
-                />
-
-                {errors.photos && (
-                  <Text
-                    style={[styles.errorText, { color: theme.colors.error }]}
-                  >
-                    {errors.photos}
-                  </Text>
-                )}
-              </View>
-            )}
-
-            {/* Step 3: Interests */}
-            {currentStep === 3 && (
-              <View style={styles.stepContainer}>
-                <Text style={[styles.stepTitle, { color: theme.colors.text }]}>
-                  Your Interests
-                </Text>
-
-                <Text
-                  style={[
-                    styles.stepDescription,
-                    { color: theme.colors.secondaryText },
-                  ]}
-                >
-                  Select interests to help us match you with activities and
-                  people.
-                </Text>
-
-                <InterestSelector
-                  selectedInterests={interests}
-                  onInterestsChange={setInterests}
-                  style={styles.interestSelector}
-                />
-
-                {errors.interests && (
-                  <Text
-                    style={[styles.errorText, { color: theme.colors.error }]}
-                  >
-                    {errors.interests}
-                  </Text>
-                )}
-              </View>
-            )}
-
-            {/* Navigation buttons */}
-            <View style={styles.buttonsContainer}>
-              {currentStep > 1 && (
-                <NeumorphicButton
-                  label="Back"
-                  variant="secondary"
-                  onPress={handlePrevStep}
-                  style={styles.button}
-                  disabled={isLoading}
-                />
-              )}
-
-              {currentStep < 3 ? (
-                <NeumorphicButton
-                  label="Continue"
-                  onPress={handleNextStep}
-                  style={[
-                    styles.button,
-                    currentStep === 1 && styles.fullWidthButton,
-                  ]}
-                />
-              ) : (
-                <NeumorphicButton
-                  label={isLoading ? "Updating..." : "Update Profile"}
-                  onPress={handleSubmit}
-                  style={styles.button}
-                  disabled={isLoading}
-                />
-              )}
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          <View style={[styles.card, { backgroundColor: theme.colors.card, borderRadius: 10, padding: 16, margin: 24, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 24 }]}> 
+            <View style={{ alignItems: 'center', marginBottom: 24 }}>
+              <PhotoSelector
+                photos={photos}
+                onPhotosChange={setPhotos}
+                primaryPhotoIndex={primaryPhotoIndex}
+                onPrimaryPhotoChange={setPrimaryPhotoIndex}
+                avatarSize={72}
+                style={{ marginBottom: 8 }}
+              />
+              {errors.photos && <Text style={[styles.errorText, { color: theme.colors.error }]}>{errors.photos}</Text>}
             </View>
-          </GlassCard>
+            <TextField
+              label="Name"
+              value={name}
+              onChangeText={setName}
+              placeholder="Your name"
+              error={errors.name}
+              style={{ ...styles.input, backgroundColor: theme.colors.inputBG, borderRadius: 12, color: theme.colors.text, borderWidth: 1, borderColor: theme.colors.border }}
+              labelStyle={{ color: theme.colors.inputLabel, fontSize: 14 }}
+              inputStyle={{ color: theme.colors.text, fontSize: 18 }}
+              focusColor={theme.colors.inputFocus}
+            />
+            <TextField
+              label="Location"
+              value={location}
+              onChangeText={setLocation}
+              placeholder="Where are you based?"
+              style={{ ...styles.input, backgroundColor: theme.colors.inputBG, borderRadius: 12, color: theme.colors.text, borderWidth: 1, borderColor: theme.colors.border }}
+              labelStyle={{ color: theme.colors.inputLabel, fontSize: 14 }}
+              inputStyle={{ color: theme.colors.text, fontSize: 18 }}
+              focusColor={theme.colors.inputFocus}
+            />
+            <TextField
+              label="About Me"
+              value={bio}
+              onChangeText={setBio}
+              placeholder="Write a short bio (max 150 chars)"
+              error={errors.bio}
+              style={{ ...styles.input, backgroundColor: theme.colors.inputBG, borderRadius: 12, color: theme.colors.text, borderWidth: 1, borderColor: theme.colors.border }}
+              labelStyle={{ color: theme.colors.inputLabel, fontSize: 14 }}
+              inputStyle={{ color: theme.colors.text, fontSize: 18 }}
+              focusColor={theme.colors.inputFocus}
+              multiline
+              maxLength={150}
+            />
+            <Text style={[styles.charCount, { color: theme.colors.secondaryText }]}>{bio.length}/150</Text>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text, marginTop: 16 }]}>Interests</Text>
+            <InterestSelector
+              selectedInterests={interests}
+              onInterestsChange={setInterests}
+              allInterests={allInterests}
+              style={{ marginBottom: 8, flexDirection: 'row', flexWrap: 'wrap' }}
+              multiple
+              tagStyle={{ backgroundColor: theme.colors.tagBG, color: theme.colors.tagText, borderRadius: 16, paddingHorizontal: 8, paddingVertical: 6, marginRight: 8, marginBottom: 8 }}
+              tagTextStyle={{ color: theme.colors.tagText, fontSize: 15 }}
+            />
+            {errors.interests && <Text style={[styles.errorText, { color: theme.colors.error }]}>{errors.interests}</Text>}
+          </View>
         </ScrollView>
-
-        {/* Delete Profile Button */}
-        <View style={styles.deleteContainer}>
+        <View style={[styles.bottomBar, { backgroundColor: theme.colors.card, borderTopLeftRadius: 10, borderTopRightRadius: 10 }]}> 
           <NeumorphicButton
-            label="Delete Profile"
-            variant="danger"
-            onPress={handleDeleteProfile}
-            style={styles.deleteButton}
+            label={isLoading ? "Saving..." : "Save Changes"}
+            onPress={handleSave}
+            style={{ ...styles.saveBtn, backgroundColor: theme.colors.accentBlue, borderRadius: 24, minHeight: 44, shadowColor: '#4F46E5', shadowOpacity: 0.18, shadowRadius: 8 }}
+            textStyle={{ color: theme.colors.text, fontWeight: 'bold', fontSize: 18 }}
             disabled={isLoading}
           />
         </View>
@@ -467,11 +273,74 @@ export default function ProfileEditScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingTop: 18,
+    paddingBottom: 8,
   },
-  keyboardAvoidingView: {
-    flex: 1,
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    fontFamily: 'Satoshi',
+  },
+  cancelBtn: {
+    fontSize: 17,
+    fontWeight: "600",
+    fontFamily: 'Satoshi',
+  },
+  scrollContent: {
+    paddingBottom: 120,
+    alignItems: "center",
+  },
+  card: {
+    width: "96%",
+    marginTop: 8,
+    marginBottom: 24,
+    // backgroundColor, borderRadius, padding set inline
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    fontFamily: 'Satoshi',
+    marginTop: 10,
+    marginBottom: 8,
+  },
+  input: {
+    marginBottom: 10,
+    fontFamily: 'Satoshi',
+  },
+  charCount: {
+    fontSize: 12,
+    textAlign: "right",
+    marginBottom: 8,
+    fontFamily: 'Satoshi',
+  },
+  errorText: {
+    fontSize: 13,
+    marginBottom: 8,
+    marginTop: -4,
+    fontFamily: 'Satoshi',
+  },
+  bottomBar: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: 18,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: -2 },
+    elevation: 8,
+  },
+  saveBtn: {
+    width: "100%",
+    minHeight: 44,
+    borderRadius: 24,
   },
   loadingContainer: {
     flex: 1,
@@ -481,81 +350,6 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  stepIndicator: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  scrollView: {
-    flex: 1,
-  },
-  contentContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-  },
-  card: {
-    padding: 20,
-  },
-  stepContainer: {
-    marginBottom: 20,
-  },
-  stepTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 16,
-  },
-  stepDescription: {
-    fontSize: 14,
-    marginBottom: 20,
-  },
-  input: {
-    marginBottom: 8,
-  },
-  characterCount: {
-    fontSize: 12,
-    textAlign: "right",
-    marginBottom: 16,
-  },
-  photoSelector: {
-    marginBottom: 16,
-  },
-  interestSelector: {
-    marginBottom: 16,
-  },
-  buttonsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  button: {
-    flex: 1,
-    marginHorizontal: 6,
-  },
-  fullWidthButton: {
-    flex: 1,
-    marginHorizontal: 0,
-  },
-  errorText: {
-    fontSize: 14,
-    marginBottom: 16,
-  },
-  deleteContainer: {
-    padding: 20,
-    paddingTop: 0,
-    marginTop: 10,
-  },
-  deleteButton: {
-    backgroundColor: "#ff4c4c",
-    marginHorizontal: 0,
+    fontFamily: 'Satoshi',
   },
 });
