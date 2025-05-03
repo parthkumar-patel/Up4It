@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -61,9 +61,8 @@ export default function EventsScreen() {
   };
 
   const navigateToEventDetails = (eventId: string) => {
-    // Navigate to event details screen (implement this later)
-    // router.push(`/event-details/${eventId}`);
-    Alert.alert('Event Details', `Viewing details for event ${eventId}`);
+    // Navigate to event details screen
+    router.push(`/event-details/${eventId}`);
   };
 
   // Helper function to format date/time from ISO string
@@ -287,7 +286,7 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontSize: 36,
-    fontWeight: 'bold',
+    fontFamily: 'Satoshi-Bold',
     color: '#FFFFFF',
     marginTop: 8,
   },
@@ -345,7 +344,7 @@ const styles = StyleSheet.create({
   },
   createEventText: {
     color: '#FFFFFF',
-    fontWeight: '600',
+    fontFamily: 'Satoshi-Medium',
     fontSize: 16,
   },
   cardWrapper: {
@@ -413,7 +412,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Satoshi-Bold',
     color: '#FDFDFD',
     marginBottom: 4,
   },
@@ -475,7 +474,7 @@ const styles = StyleSheet.create({
   remindText: {
     color: '#989DA9',
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: 'Satoshi-Medium',
   },
   distanceButtonGradient: {
     minWidth: 80,
@@ -491,6 +490,6 @@ const styles = StyleSheet.create({
   distance: {
     color: '#989DA9',
     fontSize: 14,
-    fontWeight: '500',
+    fontFamily: 'Satoshi-Medium',
   },
 }); 

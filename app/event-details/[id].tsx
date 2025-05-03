@@ -1,240 +1,369 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { events } from '@/src/lib/appwrite';
 
-// Mock event data - in a real app, this would come from a database or API
-const events = {
-  '1': {
-    id: '1',
-    title: '🏀 Pick-up Basketball',
-    time: 'In 20 minutes',
-    location: 'UBC REC Center',
-    distance: '300 m',
-    tag: 'sports',
-    description: 'Looking for a few more players for a casual pick-up game. All skill levels welcome!',
-    creator: 'Alex Chen',
-    attendees: ['Jordan Smith', 'Taylor Wong', 'Sam Rodriguez'],
-    maxAttendees: 10
-  },
-  '2': {
-    id: '2',
-    title: '📚 Study at IKB',
-    time: 'In 1 hour',
-    location: 'IKB Library',
-    distance: '500 m',
-    tag: 'study',
-    description: 'Studying for CPSC 310 final. Feel free to join if you\'re in the same class!',
-    creator: 'Jamie Park',
-    attendees: ['Riley Johnson', 'Morgan Lee'],
-    maxAttendees: 5
-  },
-  '3': {
-    id: '3',
-    title: '☕ Coffee Chat',
-    time: 'In 15 minutes',
-    location: 'Loafe Cafe',
-    distance: '250 m',
-    tag: 'casual',
-    description: 'Just looking to meet some new people over coffee. I\'m a third-year Psych major.',
-    creator: 'Casey Kim',
-    attendees: ['Alex Brown'],
-    maxAttendees: 4
-  },
-  '4': {
-    id: '4',
-    title: '🍜 Ramen Dinner',
-    time: 'In 3 hours',
-    location: 'Kinton Ramen',
-    distance: '1.2 km',
-    tag: 'food',
-    description: 'Anyone want to grab ramen tonight? I heard this place is really good!',
-    creator: 'Avery Wilson',
-    attendees: ['Jordan Taylor', 'Riley Smith', 'Morgan Chen', 'Sam Park'],
-    maxAttendees: 6
-  }
+// Type definition for events from Appwrite
+type Event = {
+  $id: string;
+  What: string;
+  Where: string;
+  When: string;
+  Tag?: string;
+  user_id: string;
+  participant_ids: string[];
 };
 
 export default function EventDetailsScreen() {
   const { id } = useLocalSearchParams();
-  const event = events[id as keyof typeof events];
+  const [event, setEvent] = useState<Event | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const insets = useSafeAreaInsets();
   
-  // In case the event doesn't exist
-  if (!event) {
+  // Fetch event data
+  useEffect(() => {
+    const fetchEvent = async () => {
+      if (!id) return;
+      
+      try {
+        setLoading(true);
+        const fetchedEvent = await events.getEvent(id as string);
+        setEvent(fetchedEvent);
+      } catch (error) {
+        console.error('Error fetching event details:', error);
+        setError('Failed to load event details');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchEvent();
+  }, [id]);
+  
+  const handleBack = () => {
+    router.back();
+  };
+  
+  const formatEventTime = (isoString: string) => {
+    try {
+      const date = new Date(isoString);
+      
+      // Format time (e.g., "3:30 PM")
+      return date.toLocaleTimeString('en-US', { 
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Time TBD';
+    }
+  };
+  
+  // Get appropriate emoji for event type
+  const getEventIcon = (event: Event) => {
+    // Default emoji if no tag is provided
+    if (!event.Tag) return '🎯';
+    
+    // Map tags to emojis
+    const tag = event.Tag.toLowerCase();
+    if (tag.includes('food') || tag.includes('lunch') || tag.includes('dinner')) return '🍕';
+    if (tag.includes('coffee') || tag.includes('drink')) return '☕';
+    if (tag.includes('study') || tag.includes('school')) return '💻';
+    if (tag.includes('sport') || tag.includes('game')) return '⚾';
+    
+    // Fallback emoji
+    return '🎉';
+  };
+  
+  // Custom header with back button
+  const HeaderComponent = () => (
+    <View style={[
+      styles.headerContainer, 
+      { 
+        paddingTop: Math.max(insets.top, 20),
+        paddingBottom: 20 
+      }
+    ]}>
+      <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+        <MaterialIcons name="arrow-back" size={24} color="#FFFFFF" />
+      </TouchableOpacity>
+      <ThemedText style={styles.headerTitle}>Event Detail</ThemedText>
+      <View style={{ width: 24 }} />
+    </View>
+  );
+  
+  // Loading state
+  if (loading) {
     return (
-      <View style={styles.notFoundContainer}>
-        <MaterialIcons name="error-outline" size={64} color="#808080" />
-        <ThemedText style={styles.notFoundText}>Event not found</ThemedText>
-        <TouchableOpacity onPress={() => router.back()}>
-          <ThemedText style={styles.backButton}>Go Back</ThemedText>
-        </TouchableOpacity>
-      </View>
+      <ThemedView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FFFFFF" />
+        <ThemedText style={styles.loadingText}>Loading event details...</ThemedText>
+      </ThemedView>
     );
   }
-
-  const spotsLeft = event.maxAttendees - event.attendees.length;
-
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#000', dark: '#000' }}
-      headerImage={<View />}
-    >
-      <TouchableOpacity 
-        style={styles.backButtonContainer} 
-        onPress={() => router.back()}
-      >
-        <MaterialIcons name="arrow-back" size={24} color="#4285F4" />
-        <ThemedText style={styles.backButtonText}>Back to Events</ThemedText>
-      </TouchableOpacity>
-
-      <ThemedText style={styles.title}>{event.title}</ThemedText>
-      
-      <ThemedView style={styles.infoBox}>
-        <View style={styles.infoRow}>
-          <MaterialIcons name="access-time" size={20} color="#808080" />
-          <ThemedText style={styles.infoText}>{event.time}</ThemedText>
-        </View>
-        
-        <View style={styles.infoRow}>
-          <MaterialIcons name="location-on" size={20} color="#808080" />
-          <ThemedText style={styles.infoText}>{event.location} ({event.distance})</ThemedText>
-        </View>
-        
-        <View style={styles.infoRow}>
-          <MaterialIcons name="person" size={20} color="#808080" />
-          <ThemedText style={styles.infoText}>Hosted by {event.creator}</ThemedText>
-        </View>
-        
-        <View style={styles.infoRow}>
-          <MaterialIcons name="tag" size={20} color="#808080" />
-          <ThemedText style={styles.infoText}>#{event.tag}</ThemedText>
-        </View>
-      </ThemedView>
-      
-      <ThemedView style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Description</ThemedText>
-        <ThemedText style={styles.description}>{event.description}</ThemedText>
-      </ThemedView>
-      
-      <ThemedView style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Attendees ({event.attendees.length}/{event.maxAttendees})</ThemedText>
-        {event.attendees.map((attendee, index) => (
-          <ThemedText key={index} style={styles.attendee}>• {attendee}</ThemedText>
-        ))}
-        
-        <ThemedText style={styles.spotsLeft}>
-          {spotsLeft > 0 
-            ? `${spotsLeft} spot${spotsLeft === 1 ? '' : 's'} left`
-            : 'No spots left'}
-        </ThemedText>
-      </ThemedView>
-      
-      <ThemedView style={styles.actionContainer}>
-        <TouchableOpacity 
-          style={[
-            styles.joinButton, 
-            spotsLeft <= 0 && styles.joinButtonDisabled
-          ]}
-          disabled={spotsLeft <= 0}
-        >
-          <ThemedText style={styles.joinButtonText}>
-            {spotsLeft > 0 ? 'Join Event' : 'Event Full'}
-          </ThemedText>
+  
+  // Error state
+  if (error || !event) {
+    return (
+      <ThemedView style={styles.errorContainer}>
+        <MaterialIcons name="error-outline" size={64} color="rgba(255,255,255,0.3)" />
+        <ThemedText style={styles.errorText}>{error || 'Event not found'}</ThemedText>
+        <TouchableOpacity style={styles.backToEventsButton} onPress={handleBack}>
+          <ThemedText style={styles.backToEventsText}>Back to Events</ThemedText>
         </TouchableOpacity>
       </ThemedView>
-    </ParallaxScrollView>
+    );
+  }
+  
+  // Function to join the event
+  const handleJoinEvent = () => {
+    // Implementation for joining event will go here
+    console.log('Joining event:', event.$id);
+  };
+  
+  const shareCode = "orange trail"; // Placeholder - in real app, this would come from backend
+  
+  return (
+    <ThemedView style={styles.container}>
+      <HeaderComponent />
+      
+      <ScrollView 
+        style={styles.scrollContainer} 
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        <ThemedText style={styles.title}>
+          {getEventIcon(event)} {event.What}
+        </ThemedText>
+        
+        <View style={styles.detailSection}>
+          <View style={styles.detailRow}>
+            <ThemedText style={styles.detailLabel}>When</ThemedText>
+            <ThemedText style={styles.detailValue}>{formatEventTime(event.When)}</ThemedText>
+          </View>
+          
+          <View style={styles.detailRow}>
+            <ThemedText style={styles.detailLabel}>Where</ThemedText>
+            <ThemedText style={styles.detailValue}>{event.Where}</ThemedText>
+          </View>
+          
+          <View style={styles.detailRow}>
+            <ThemedText style={styles.detailLabel}>Distance</ThemedText>
+            <ThemedText style={styles.detailValue}>500 m</ThemedText>
+          </View>
+        </View>
+        
+        {/* Map Placeholder - In a real app, use React Native Maps */}
+        <View style={styles.mapContainer}>
+          <LinearGradient
+            colors={['#171823', '#171823']}
+            style={styles.map}
+          >
+            <MaterialIcons name="map" size={48} color="rgba(255,255,255,0.2)" />
+            <ThemedText style={styles.mapPlaceholderText}>Map View</ThemedText>
+          </LinearGradient>
+        </View>
+        
+        <View style={styles.tagSection}>
+          <ThemedText style={styles.detailLabel}>Tag</ThemedText>
+          <View style={styles.tagContainer}>
+            <ThemedText style={styles.tagText}>{event.Tag || 'None'}</ThemedText>
+          </View>
+        </View>
+        
+        <View style={styles.detailRow}>
+          <ThemedText style={styles.detailLabel}>Share-Code</ThemedText>
+          <ThemedText style={styles.shareCode}>{shareCode}</ThemedText>
+        </View>
+        
+        <View style={styles.joinButtonContainer}>
+          <LinearGradient
+            colors={['#1B1C26', '#101219', '#0B0C11', '#090A14']}
+            locations={[0, 0.25, 0.75, 1]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.joinButtonGradient}
+          >
+            <TouchableOpacity 
+              style={styles.joinButton}
+              onPress={handleJoinEvent}
+            >
+              <ThemedText style={styles.joinButtonText}>Join Event</ThemedText>
+            </TouchableOpacity>
+          </LinearGradient>
+          <View style={styles.buttonInnerShadow} />
+        </View>
+      </ScrollView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  notFoundContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: '#07080A',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    width: '100%',
+    backgroundColor: '#07080A',
+    borderBottomWidth: 0,
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontFamily: 'Satoshi-Bold',
+    color: '#FFFFFF',
+    marginTop: 8,
+  },
+  scrollContainer: {
+    backgroundColor: '#07080A',
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 50,
+  },
+  title: {
+    fontSize: 28,
+    fontFamily: 'Satoshi-Bold',
+    color: '#FFFFFF',
+    marginBottom: 24,
+  },
+  detailSection: {
+    marginBottom: 24,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  detailLabel: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    opacity: 0.8,
+  },
+  detailValue: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    fontFamily: 'Satoshi-Medium',
+  },
+  mapContainer: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  map: {
+    height: 220,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mapPlaceholderText: {
+    marginTop: 8,
+    color: 'rgba(255, 255, 255, 0.5)',
+  },
+  tagSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  tagContainer: {
+    backgroundColor: '#171823',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 24,
+  },
+  tagText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  shareCode: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    fontFamily: 'Satoshi-Bold',
+  },
+  joinButtonContainer: {
+    marginTop: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  joinButtonGradient: {
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  buttonInnerShadow: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  },
+  joinButton: {
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  joinButtonText: {
+    fontSize: 18,
+    fontFamily: 'Satoshi-Medium',
+    color: '#FFFFFF',
+  },
+  loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#07080A',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#FFFFFF',
+    opacity: 0.7,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#07080A',
     padding: 20,
   },
-  notFoundText: {
+  errorText: {
     fontSize: 18,
+    color: 'rgba(255,255,255,0.7)',
+    textAlign: 'center',
     marginTop: 16,
     marginBottom: 24,
   },
-  backButton: {
-    color: '#4285F4',
-    fontSize: 16,
-  },
-  backButtonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  backButtonText: {
-    color: '#4285F4',
-    marginLeft: 8,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  infoBox: {
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#3C3C3C',
-  },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  infoText: {
-    marginLeft: 12,
-    fontSize: 16,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  attendee: {
-    fontSize: 16,
-    marginBottom: 6,
-    marginLeft: 8,
-  },
-  spotsLeft: {
-    marginTop: 12,
-    fontStyle: 'italic',
-  },
-  actionContainer: {
-    marginTop: 16,
-    marginBottom: 40,
-    alignItems: 'center',
-  },
-  joinButton: {
-    backgroundColor: '#4285F4',
+  backToEventsButton: {
+    backgroundColor: '#3498db',
+    paddingHorizontal: 20,
     paddingVertical: 12,
-    paddingHorizontal: 40,
-    borderRadius: 30,
-    width: '80%',
-    alignItems: 'center',
+    borderRadius: 8,
   },
-  joinButtonDisabled: {
-    backgroundColor: '#808080',
-  },
-  joinButtonText: {
+  backToEventsText: {
     color: '#FFFFFF',
-    fontWeight: '600',
+    fontFamily: 'Satoshi-Medium',
     fontSize: 16,
   },
 }); 

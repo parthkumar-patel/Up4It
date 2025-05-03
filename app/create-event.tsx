@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'Satoshi-Bold',
     color: '#FFFFFF',
     marginTop: 8,
   },
@@ -395,8 +395,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#ECF1F5',
+    fontFamily: 'Satoshi-Medium',
+    color: '#DDDDDD',
     marginBottom: 8,
   },
   inputWrapper: {
@@ -459,13 +459,13 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: 'Satoshi-Medium',
     color: '#FFFFFF',
   },
   modalButtonText: {
     fontSize: 16,
     color: '#3498db',
-    fontWeight: '600',
+    fontFamily: 'Satoshi-Medium',
   },
   datePicker: {
     height: 260,
@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
   },
   postText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: 'Satoshi-Medium',
     color: '#FFFFFF',
   },
   errorContainer: {
@@ -526,6 +526,6 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: 'Satoshi-Medium',
   },
 }); 
