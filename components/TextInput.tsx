@@ -1,0 +1,79 @@
+import { useState } from 'react';
+import { View, TextInput as RNTextInput, StyleSheet, TextInputProps, ViewStyle } from 'react-native';
+import { Text } from './Text';
+
+interface CustomTextInputProps extends TextInputProps {
+  label?: string;
+  error?: string;
+  containerStyle?: ViewStyle;
+}
+
+export function TextInput({
+  label,
+  error,
+  containerStyle,
+  style,
+  ...props
+}: CustomTextInputProps) {
+  const [isFocused, setIsFocused] = useState(false);
+
+  return (
+    <View style={[styles.container, containerStyle]}>
+      {label && <Text style={styles.label}>{label}</Text>}
+      <View
+        style={[
+          styles.inputContainer,
+          isFocused && styles.inputContainerFocused,
+          error && styles.inputContainerError,
+        ]}
+      >
+        <RNTextInput
+          style={[styles.input, style]}
+          placeholderTextColor="#666666"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          {...props}
+        />
+      </View>
+      {error && <Text style={styles.errorText}>{error}</Text>}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
+  label: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 16,
+    color: '#E5E7EB',
+    marginBottom: 8,
+  },
+  inputContainer: {
+    borderWidth: 1,
+    borderColor: '#333333',
+    borderRadius: 8,
+    backgroundColor: '#1A1A1A',
+    overflow: 'hidden',
+  },
+  inputContainerFocused: {
+    borderColor: '#668EFF',
+  },
+  inputContainerError: {
+    borderColor: '#EF4444',
+  },
+  input: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 16,
+    color: '#FFFFFF',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  errorText: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 14,
+    color: '#EF4444',
+    marginTop: 4,
+  },
+});

@@ -1,75 +1,255 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { View, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Settings2, Clock } from 'lucide-react-native';
+import { Text } from '../../components/Text';
+import { router } from 'expo-router';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+interface Event {
+  id: string;
+  emoji: string;
+  title: string;
+  location: string;
+  time: string;
+  distance: string;
+}
+
+interface EventCardProps {
+  event: Event;
+  index: number;
+}
+
+const events: Event[] = [
+  {
+    id: '1',
+    emoji: '🍕',
+    title: 'Grab a slice',
+    location: 'UniverCity Square',
+    time: '6:00 PM',
+    distance: '300 m',
+  },
+  {
+    id: '2',
+    emoji: '💻',
+    title: 'Study session',
+    location: 'Irving K. Barber Learning Centre',
+    time: '5:30 PM',
+    distance: '400 m',
+  },
+  {
+    id: '3',
+    emoji: '⚾',
+    title: 'Softball game',
+    location: 'Thunderbird Park',
+    time: '5:00 PM',
+    distance: '800 m',
+  },
+  {
+    id: '4',
+    emoji: '☕',
+    title: 'Coffee break',
+    location: 'Great Dane Coffee',
+    time: '4:20 PM',
+    distance: '1.2 km',
+  },
+];
+
+function EventCard({ event, index }: EventCardProps) {
+  return (
+    <Animated.View 
+      entering={FadeIn.delay(index * 100)}
+      style={styles.eventCard}
+    >
+      <Pressable 
+        style={styles.eventContent}
+        onPress={() => router.push(`/event/${event.id}`)}
+      >
+        <View style={styles.eventHeader}>
+          <Text style={styles.eventEmoji}>{event.emoji}</Text>
+          <Text style={styles.eventTitle}>{event.title}</Text>
+        </View>
+        
+        <View style={styles.eventDetails}>
+          <Text style={styles.eventLocation}>{event.location}</Text>
+          <Text style={styles.eventTime}>{event.time}</Text>
+        </View>
+        
+        <View style={styles.eventActions}>
+          <Pressable 
+            style={styles.dismissButton}
+            onPress={(e) => {
+              e.stopPropagation();
+              // Handle dismiss
+            }}
+          >
+            <Text style={styles.dismissButtonText}>✕</Text>
+          </Pressable>
+          
+          <Pressable 
+            style={styles.remindButton}
+            onPress={(e) => {
+              e.stopPropagation();
+              // Handle remind
+            }}
+          >
+            <Clock size={16} color="#FFFFFF" />
+            <Text style={styles.remindButtonText}>Remind me</Text>
+          </Pressable>
+          
+          <View style={styles.distanceContainer}>
+            <Text style={styles.distanceText}>{event.distance}</Text>
+          </View>
+        </View>
+      </Pressable>
+    </Animated.View>
+  );
+}
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.title}>Up4It</Text>
+          <Text style={styles.subtitle}>
+            Spontaneous events happening{'\n'}within next 4 hours
+          </Text>
+        </View>
+        
+        <Pressable 
+          onPress={() => router.push('/(tabs)/settings')}
+          style={styles.settingsButton}
+        >
+          <Settings2 size={24} color="#FFFFFF" />
+        </Pressable>
+      </View>
+
+      <ScrollView 
+        style={styles.eventsList}
+        contentContainerStyle={{ paddingBottom: 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {events.map((event, index) => (
+          <EventCard key={event.id} event={event} index={index} />
+        ))}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: '#000000',
   },
-  stepContainer: {
-    gap: 8,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  title: {
+    fontFamily: 'Inter-Bold',
+    fontSize: 32,
+    color: '#FFFFFF',
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  subtitle: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 16,
+    color: '#666666',
+    lineHeight: 22,
+  },
+  settingsButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#1C1C1E',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  eventsList: {
+    paddingHorizontal: 20,
+  },
+  eventCard: {
+    backgroundColor: '#1C1C1E',
+    borderRadius: 16,
+    marginBottom: 12,
+    overflow: 'hidden',
+  },
+  eventContent: {
+    padding: 16,
+  },
+  eventHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  eventEmoji: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  eventTitle: {
+    fontFamily: 'Inter-SemiBold',
+    fontSize: 20,
+    color: '#FFFFFF',
+  },
+  eventDetails: {
+    marginBottom: 16,
+  },
+  eventLocation: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 16,
+    color: '#666666',
+    marginBottom: 4,
+  },
+  eventTime: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 14,
+    color: '#666666',
+  },
+  eventActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dismissButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#2C2C2E',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  dismissButtonText: {
+    fontSize: 16,
+    color: '#666666',
+  },
+  remindButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2C2C2E',
+    borderRadius: 18,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginRight: 12,
+  },
+  remindButtonText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 14,
+    color: '#FFFFFF',
+    marginLeft: 6,
+  },
+  distanceContainer: {
+    backgroundColor: '#2C2C2E',
+    borderRadius: 18,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  distanceText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 14,
+    color: '#FFFFFF',
   },
 });
