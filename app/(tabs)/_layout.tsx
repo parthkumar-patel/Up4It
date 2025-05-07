@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Chrome as Home, Search, Calendar, User, Bell } from 'lucide-react-native';
+import { Chrome as Home, User, Bell } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -20,24 +20,6 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color, size }) => (
             <Home size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, size }) => (
-            <Search size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="events"
-        options={{
-          title: 'Events',
-          tabBarIcon: ({ color, size }) => (
-            <Calendar size={size} color={color} />
           ),
         }}
       />
