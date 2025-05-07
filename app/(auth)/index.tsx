@@ -23,7 +23,8 @@ export default function LoginScreen() {
     setTimeout(() => {
       setLoading(false);
       if (email.endsWith('@ubc.ca') || email.endsWith('@alumni.ubc.ca')) {
-        router.replace('/(tabs)');
+        // Redirect to profile setup for testing
+        router.replace('/(auth)/profile-setup');
       } else {
         alert('Please use a valid UBC email address');
       }
@@ -36,7 +37,8 @@ export default function LoginScreen() {
     // Simulate UBC SSO login
     setTimeout(() => {
       setLoading(false);
-      router.replace('/(tabs)');
+      // Redirect to profile setup for testing
+      router.replace('/(auth)/profile-setup');
     }, 1500);
   };
 
