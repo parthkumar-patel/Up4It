@@ -1,0 +1,514 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Set up project infrastructure, security foundation, and design system",
+      "description": "Continue development of the initialized React Native/Expo project, configure Appwrite for backend services with university email authentication, establish security framework, and create design system",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "details": "The basic Expo project has been initialized. Continue development by integrating Appwrite (Project ID: 6811f9090020cdcb835a, API endpoint: https://fra.cloud.appwrite.io/v1) for backend services. Implement email domain validation for university emails (@student.ubc.ca, @alumni.ubc.ca). Create authentication screens with modern UI components. Develop a comprehensive design system incorporating glassmorphism, neumorphism, and bento grid layouts for consistent UI across the app. Establish security requirements through threat modeling and risk assessment. Build authentication flows with robust security measures. Add smooth micro-interactions, ensure dark/light mode compatibility, and use gradient backgrounds with elegant typography. Configure secure session management and token storage with encryption.",
+      "testStrategy": "Test email validation logic with various email formats. Verify authentication flow works end-to-end with Appwrite. Ensure proper error handling for invalid credentials and network issues. Test session persistence across app restarts. Verify UI components render correctly in both dark and light modes. Test micro-interactions and animations for smoothness across different devices. Conduct security testing for authentication mechanisms including penetration testing.",
+      "subtasks": [
+        {
+          "id": "1.1",
+          "title": "Initialize Expo project",
+          "status": "completed",
+          "description": "Set up the basic React Native project using Expo CLI"
+        },
+        {
+          "id": "1.2",
+          "title": "Set up Appwrite backend",
+          "status": "completed",
+          "description": "Configure MCP server for Appwrite with Project ID: 6811f9090020cdcb835a and API endpoint: https://fra.cloud.appwrite.io/v1"
+        },
+        {
+          "id": "1.3",
+          "title": "Security requirements and threat modeling",
+          "status": "completed",
+          "description": "Define comprehensive security requirements, conduct threat modeling, and establish security design patterns for the application"
+        },
+        {
+          "id": "1.4",
+          "title": "Create design system and UI component library",
+          "status": "completed",
+          "description": "Develop a cohesive design language and component library incorporating glassmorphism, neumorphism, and bento grid layouts as foundation for the app"
+        },
+        {
+          "id": "1.5",
+          "title": "Implement Appwrite authentication with security best practices",
+          "status": "completed",
+          "description": "Configure Appwrite authentication services for email verification and university email domain validation with secure implementation"
+        },
+        {
+          "id": "1.6",
+          "title": "Design modern authentication UI prototypes",
+          "status": "completed",
+          "description": "Create and test prototypes for authentication screens using the design system before full implementation"
+        },
+        {
+          "id": "1.7",
+          "title": "Implement UI components and interactions",
+          "status": "completed",
+          "description": "Add smooth micro-interactions, gradient backgrounds, and elegant typography to authentication screens following the prototypes"
+        },
+        {
+          "id": "1.8",
+          "title": "Configure dark/light mode support",
+          "status": "completed",
+          "description": "Ensure all UI components are compatible with both dark and light themes"
+        },
+        {
+          "id": "1.9",
+          "title": "Set up secure session management",
+          "status": "completed",
+          "description": "Implement secure storage with encryption for auth tokens and session persistence"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Implement user profile system with modern UI",
+      "description": "Create the profile creation, editing, and management system including photo uploads and interest selection using the established design system",
+      "status": "done",
+      "dependencies": [
+        1
+      ],
+      "priority": "high",
+      "details": "Create profile UI prototypes using glassmorphism and bento grid components from the design system. Implement profile creation screens with photo upload capability (max 5 photos) following the approved prototypes. Create UI for bio input and interest tag selection. Implement backend storage for profile data in Appwrite with proper security measures for user data. Add image processing for optimization and storage. Create profile editing functionality. Implement interest tag system with predefined categories matching activity types. Use consistent animations from the design system for all interactions.",
+      "testStrategy": "Verify photo upload works across devices with security validation for content. Test profile data persistence and proper encryption. Ensure interest tags are properly stored and retrieved. Test profile editing functionality. Validate image optimization for different device capabilities. Conduct security testing for data privacy compliance. Verify UI renders correctly across all supported devices and themes.",
+      "subtasks": [
+        {
+          "id": "2.1",
+          "title": "Design profile UI prototypes",
+          "status": "done",
+          "description": "Create interactive prototypes for profile screens using glassmorphism and bento grid layouts from the design system"
+        },
+        {
+          "id": "2.2",
+          "title": "Implement secure photo upload and storage",
+          "status": "done",
+          "description": "Build photo upload functionality with secure content validation, optimization, and storage in Appwrite"
+        },
+        {
+          "id": "2.3",
+          "title": "Create profile data schema and security model",
+          "status": "done",
+          "description": "Design and implement secure database schema for profile data with proper access controls"
+        },
+        {
+          "id": "2.4",
+          "title": "Develop interest tag system",
+          "status": "done",
+          "description": "Implement interactive tag selection UI and backend storage for interest categories"
+        },
+        {
+          "id": "2.5",
+          "title": "Build profile editing and management interface",
+          "status": "done",
+          "description": "Create the UI and functionality for users to view and edit their profiles with smooth animations"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Develop location services integration with privacy focus",
+      "description": "Implement geolocation services for user location tracking and proximity-based features with strong privacy and security controls",
+      "status": "done",
+      "dependencies": [
+        1
+      ],
+      "priority": "high",
+      "details": "Integrate device location services with appropriate permission handling and clear privacy explanations. Implement background location updates with battery optimization. Create geospatial database queries for proximity calculations with security measures to prevent location tracking abuse. Set up geofencing for activity radius. Implement map integration (Google Maps/Mapbox) for displaying locations using the design system components. Create privacy-focused location permission flows with clear user messaging. Implement data minimization by only storing necessary location data and implementing proper access controls.",
+      "testStrategy": "Test location permission flows on both iOS and Android with privacy-oriented messaging. Verify accuracy of proximity calculations. Measure battery impact of location tracking. Test geofencing triggers. Ensure location data is properly secured, anonymized where appropriate, and handled according to privacy best practices. Conduct security audit of location data handling. Test UI renders correctly across all supported devices.",
+      "subtasks": [
+        {
+          "id": "3.1",
+          "title": "Design privacy-focused location permission flows",
+          "status": "done",
+          "description": "Create user-friendly permission requests with clear privacy explanations using design system components"
+        },
+        {
+          "id": "3.2",
+          "title": "Implement secure location tracking mechanism",
+          "status": "done",
+          "description": "Build location services integration with privacy controls and battery optimization"
+        },
+        {
+          "id": "3.3",
+          "title": "Develop geospatial database queries with security",
+          "status": "done",
+          "description": "Create secure proximity calculation functions with protections against location data abuse"
+        },
+        {
+          "id": "3.4",
+          "title": "Integrate map visualization",
+          "status": "done",
+          "description": "Implement map display using design system components for consistent UI"
+        },
+        {
+          "id": "3.5",
+          "title": "Create geofencing functionality",
+          "status": "done",
+          "description": "Build geofencing for activity radius with efficient battery usage"
+        },
+        {
+          "id": "3.6",
+          "title": "Implement location data security measures",
+          "status": "done",
+          "description": "Add data minimization, encryption, and access controls for location information"
+        }
+      ]
+    },
+      {
+        "id": 4,
+        "title": "Build event feed with card-based UI using dark neumorphism design",
+        "description": "Create the core event discovery feed with swipeable cards featuring dark neumorphism elements and intuitive interactions",
+      "status": "done",
+        "dependencies": [
+          2,
+          3
+        ],
+        "priority": "high",
+        "details": "Design interactive prototypes for the event feed using dark neumorphism card elements with consistent styling from the design system. Implement card-based UI for event discovery with smooth swipe animations and depth effects. Create visually appealing event cards showing emoji + event title, location, time, action buttons (Pass, Remind, Join), and distance. Add smooth, physics-based animations for card interactions and transitions between views. Implement distance calculation and sorting logic with proper security measures. Ensure each card includes the essential event information with optimized layout for quick scanning. Create tap interaction to transition to event detail page. Implement the action buttons with appropriate feedback animations. Ensure accessibility is maintained despite complex UI elements.",
+        "testStrategy": "Test swiping mechanics on various device sizes. Verify animation performance on lower-end devices. Ensure distance calculations are accurate and efficiently implemented. Test card layout across different screen sizes. Verify accessibility features work with the card interface. Test integration with location services for accurate distance display. Conduct usability testing with diverse user groups. Test UI consistency with design system across light and dark themes.",
+        "subtasks": [
+          {
+            "id": "4.1",
+            "title": "Design and prototype event feed interface",
+          "status": "done",
+            "description": "Create interactive prototypes for card-based event feed using dark neumorphism design with swipe interactions"
+          },
+          {
+            "id": "4.2",
+            "title": "Develop animation system for card interactions",
+          "status": "done",
+            "description": "Build physics-based animations for card movements, transitions, and micro-interactions"
+          },
+          {
+            "id": "4.3",
+            "title": "Implement event card UI components",
+          "status": "done",
+            "description": "Create dark neumorphism card components displaying emoji, title, location, time, buttons, and distance"
+          },
+          {
+            "id": "4.4",
+            "title": "Build distance calculation and sorting system",
+          "status": "done",
+            "description": "Implement secure proximity-based sorting of events with privacy protections"
+          },
+          {
+            "id": "4.5",
+            "title": "Create card interaction handlers",
+          "status": "done",
+            "description": "Develop tap and swipe gesture handlers with appropriate visual feedback"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Implement event creation and detail view functionality",
+        "description": "Build the system for users to create events and view detailed event information with map integration",
+      "status": "done",
+        "dependencies": [
+          3,
+          4
+        ],
+        "priority": "medium",
+      "details": "Design event creation interface prototypes using card layouts with dark neumorphism for visual appeal. Implement form-based interface with fields for emoji+title, location, time, and optional tag selection. Create location selection with map integration for precise venue picking. Build event detail page showing comprehensive information with bold headers, embedded map with red pin at event location. Implement basic RSVP/Join button functionality that works with Firebase backend. Create 4-hour timer functionality with server-side validation to prevent manipulation. Integrate secure event participation system to track attendees with proper privacy controls.",
+      "testStrategy": "Test creation flow with multiple input combinations, verify form validation, and test location selection accuracy with GPS integration. Verify event details display correctly with formatted fields and embedded map. Test expiry system by creating events and verifying they expire after 4 hours. Validate participant tracking by having multiple test users join events and verifying counts.",
+        "subtasks": [
+          {
+            "id": "5.1",
+            "title": "Design event creation and detail UI",
+          "status": "done",
+          "details": "Create wireframes and implement custom UI elements for event creation flow and event details page using the dark neumorphism design language. Ensure forms have appropriate input validation and error handling. Design should include card layouts for details, embedded maps, and action buttons."
+          },
+          {
+            "id": "5.2",
+            "title": "Implement event creation interface",
+          "status": "done",
+          "details": "Build form-based interface with fields for emoji+title, location, time, tag selection. Implement validation logic and backend integration with Firebase. Create location selection UI with map integration."
+          },
+          {
+            "id": "5.3",
+            "title": "Develop map integration for location",
+          "status": "done",
+          "details": "Integrate maps functionality for location selection and visualization. Include reverse geocoding for address display. Implement map styling that matches the dark theme of the app."
+          },
+          {
+            "id": "5.4",
+            "title": "Create event detail page",
+          "status": "done",
+          "details": "Implement a comprehensive event detail page showing all event information with proper formatting and styling. Include embedded map component, RSVP controls, and sharing functionality."
+          },
+          {
+            "id": "5.5",
+            "title": "Develop secure event expiry system",
+          "status": "done",
+          "details": "Create 4-hour timer functionality with server-side validation to prevent manipulation. Implement appropriate UI indicators for time remaining and expired status. Ensure expired events are filtered out of main views."
+          },
+          {
+            "id": "5.6",
+            "title": "Build event participation tracking",
+          "status": "done",
+          "details": "Implement secure system for tracking event participants with privacy controls. Create UI for displaying participant counts and status. Add functionality for users to join and leave events."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Develop user profile and karma system",
+        "description": "Enhance the user profile system with karma score ratings and interest tag management",
+        "status": "pending",
+        "dependencies": [
+          2
+        ],
+        "priority": "medium",
+        "details": "Design enhanced profile UI incorporating karma score system using star ratings with dark neumorphism styling. Create comprehensive interest management interface for users to select and update their interests with emoji+tag combinations. Implement karma score display with star ratings and backend logic for score calculation and updates. Add profile verification badge for users with verified university emails. Build profile viewing permissions with privacy controls. Create system for viewing other user profiles with appropriate information display. Implement backend logic for updating karma scores after events with proper security measures. Add profile statistics section showing past events attended and karma progression.",
+        "testStrategy": "Test interest selection and management across different devices. Verify karma score updates correctly after user participation in events. Test profile viewing with various permission settings. Ensure profile information is properly secured. Test privacy controls for profile visibility. Validate UI renders correctly across all supported devices in both light and dark themes. Test integration with authentication system for verified badges.",
+        "subtasks": [
+          {
+            "id": "6.1",
+            "title": "Design enhanced profile UI with karma system",
+          "status": "done",
+            "description": "Create interactive prototypes for profile view incorporating star ratings and interest tags"
+          },
+          {
+            "id": "6.2",
+            "title": "Implement comprehensive interest management",
+            "status": "pending",
+            "description": "Build interface for selecting and managing emoji+tag combinations for interests"
+          },
+          {
+            "id": "6.3",
+            "title": "Develop karma score system",
+            "status": "pending",
+            "description": "Create star rating display and backend logic for karma score calculation"
+          },
+          {
+            "id": "6.4",
+            "title": "Build profile viewing functionality",
+            "status": "pending",
+            "description": "Implement secure system for viewing other user profiles with appropriate permissions"
+          },
+          {
+            "id": "6.5",
+            "title": "Create profile statistics section",
+            "status": "pending",
+            "description": "Add visualizations for user participation history and karma progression"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement reminder system and event filters",
+        "description": "Build the notification reminder system for saved events and filtering capabilities for the event feed",
+        "status": "pending",
+        "dependencies": [
+          4,
+          5
+        ],
+        "priority": "medium",
+        "details": "Design reminder system UI using design system components with dark neumorphism. Create functionality for users to set reminders from event cards with intuitive UI. Implement local notification storage with appropriate scheduling. Build category-based filter system for event feed with tag selection interface. Design filter UI bar that allows users to toggle interest filters like \"Food,\" \"Study,\" and \"Chill\" with real-time feed updates. Implement backend filtering logic with optimized querying. Create notification management system for users to view and cancel set reminders. Build notification delivery system with proper security and privacy measures. Implement preference settings for reminder timing (e.g., 15 min, 30 min before event).",
+        "testStrategy": "Test reminder setting functionality from event cards. Verify notifications are delivered at correct times. Test filter system with various combinations of interests. Ensure filter UI updates appropriately when selections change. Test reminder cancellation flow. Verify notification permissions are properly requested and handled. Test edge cases like setting multiple reminders. Validate UI renders correctly across all supported devices in both light and dark themes.",
+        "subtasks": [
+          {
+            "id": "7.1",
+            "title": "Design reminder system UI",
+            "status": "pending",
+            "description": "Create interactive prototypes for reminder functionality on event cards and management interface"
+          },
+          {
+            "id": "7.2",
+            "title": "Implement event reminder functionality",
+            "status": "pending", 
+            "description": "Build system for setting, storing, and triggering event reminders"
+          },
+          {
+            "id": "7.3",
+            "title": "Create notification delivery system",
+            "status": "pending",
+            "description": "Develop secure notification mechanism for reminder delivery with privacy controls"
+          },
+          {
+            "id": "7.4",
+            "title": "Design and implement filter UI bar",
+            "status": "pending",
+            "description": "Build interactive filter system with emoji+tag toggles for event categories"
+          },
+          {
+            "id": "7.5",
+            "title": "Develop real-time filter logic",
+            "status": "pending",
+            "description": "Create optimized backend filtering system for dynamic feed updates"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Create share code verification system",
+        "description": "Build the share code generation and verification system for confirming event attendance",
+        "status": "pending",
+        "dependencies": [
+          5,
+          6
+        ],
+        "priority": "low",
+        "details": "Design verification UI prototypes using design system components with dark neumorphism. Create secure algorithm for generating unique share codes for each event with cryptographic protection. Implement share code display on event detail page with proper visual presentation. Build verification UI for users to enter codes when attending events. Develop backend logic to validate attendance verification with proper security measures. Create attendance history tracking with privacy considerations. Implement system for updating karma scores after verified attendance. Design and implement verification success/failure flows with engaging animations. Add badges or achievements for consistent event attendance with gamification elements.",
+        "testStrategy": "Test share code generation for uniqueness and security. Verify verification process works when users enter the correct code. Test against potential verification bypassing. Test failure scenarios with incorrect codes. Ensure verification status is properly recorded in the database with appropriate security. Test karma score updates after verification. Validate UI renders correctly across all supported devices in both light and dark themes.",
+        "subtasks": [
+          {
+            "id": "8.1",
+            "title": "Design verification UI prototypes",
+            "status": "pending",
+            "description": "Create interactive prototypes for verification flow using design system components with dark neumorphism"
+          },
+          {
+            "id": "8.2",
+            "title": "Implement secure share code generation",
+            "status": "pending",
+            "description": "Build cryptographically secure code generation system with uniqueness guarantees"
+          },
+          {
+            "id": "8.3",
+            "title": "Create share code display UI",
+            "status": "pending",
+            "description": "Implement clear visual presentation of share codes on event detail pages"
+          },
+          {
+            "id": "8.4",
+            "title": "Develop code verification interface",
+            "status": "pending",
+            "description": "Build user interface for entering verification codes when attending events"
+          },
+          {
+            "id": "8.5",
+            "title": "Implement attendance tracking system",
+            "status": "pending",
+            "description": "Create secure backend system for recording verified attendance and updating karma"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Implement safety features and reporting system",
+        "description": "Build user safety features including reporting, blocking, and content moderation",
+        "status": "pending",
+        "dependencies": [
+          4,
+          5,
+          6
+        ],
+        "priority": "medium",
+        "details": "Design safety feature UI prototypes using design system components with dark neumorphism. Create user reporting functionality for inappropriate events or behavior with clear UI flow. Implement user blocking mechanism with proper security measures. Design and implement content moderation system for event descriptions and user profiles using both automated tools and manual review. Add safety features like suggested public meeting places with clear UI presentation. Create emergency contact feature with quick access design. Design safety tips and guidelines for users using design system components. Create admin dashboard for reviewing reports with appropriate access controls. Implement verification process for university email domains to ensure user authenticity.",
+        "testStrategy": "Test reporting flow from end to end. Verify blocking functionality prevents all communication and visibility. Test content moderation with various types of text including edge cases. Ensure safety features are easily accessible. Verify emergency contact feature works as expected. Test security of reporting system against potential abuse. Validate UI renders correctly across all supported devices in both light and dark themes. Test email domain verification system.",
+        "subtasks": [
+          {
+            "id": "9.1",
+            "title": "Design safety feature prototypes",
+            "status": "pending",
+            "description": "Create prototypes for reporting, blocking, and safety features using design system with dark neumorphism"
+          },
+          {
+            "id": "9.2",
+            "title": "Implement reporting system",
+            "status": "pending",
+            "description": "Build user-friendly reporting flow with proper security and privacy measures"
+          },
+          {
+            "id": "9.3",
+            "title": "Create user blocking functionality",
+            "status": "pending",
+            "description": "Implement comprehensive blocking mechanism with security controls"
+          },
+          {
+            "id": "9.4",
+            "title": "Develop content moderation system",
+            "status": "pending",
+            "description": "Build automated and manual review systems for user-generated content"
+          },
+          {
+            "id": "9.5",
+            "title": "Implement safety suggestions",
+            "status": "pending",
+            "description": "Create meeting place suggestions and safety guidelines with clear presentation"
+          },
+          {
+            "id": "9.6",
+            "title": "Build admin moderation dashboard",
+            "status": "pending",
+            "description": "Develop secure admin interface for reviewing reports and moderating content"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Optimize performance and prepare for campus launch",
+        "description": "Conduct performance optimization, testing, and final preparations for university-specific app launch",
+        "status": "pending",
+        "dependencies": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "priority": "low",
+        "details": "Conduct comprehensive security audit and penetration testing across all app features. Optimize app performance to meet requirements (cold start under 2s, card loading under 1s, etc.). Implement analytics to track user behavior and app performance with privacy considerations. Create onboarding tutorial using design system components with engaging animations explaining core features: event feed, creation, karma system, and reminders. Prepare app store assets and descriptions targeting university students. Implement crash reporting and monitoring. Fix identified security vulnerabilities. Optimize battery usage, especially for location services. Prepare marketing materials and launch strategy focusing on campus-specific rollout with university ambassadors. Conduct final user acceptance testing with target university students.",
+        "testStrategy": "Conduct security penetration testing across all app functions. Perform performance testing across various devices focusing on feed loading speed. Measure key metrics like app start time, card rendering, and battery impact. Test onboarding flow with new university student users. Verify analytics are correctly tracking user actions while respecting privacy. Test app on low-end devices to ensure acceptable performance. Conduct final regression testing across all features with special attention to university-specific features.",
+        "subtasks": [
+          {
+            "id": "10.1",
+            "title": "Conduct comprehensive security audit",
+            "status": "pending",
+            "description": "Perform penetration testing and security review across all app functionality"
+          },
+          {
+            "id": "10.2",
+            "title": "Optimize event feed performance",
+            "status": "pending",
+            "description": "Improve card rendering, animations, and overall responsiveness across devices"
+          },
+          {
+            "id": "10.3",
+            "title": "Implement privacy-respecting analytics",
+            "status": "pending",
+            "description": "Set up analytics with proper user consent and data minimization"
+          },
+          {
+            "id": "10.4",
+            "title": "Create engaging onboarding tutorial",
+            "status": "pending",
+            "description": "Build interactive onboarding explaining event feed, creation, karma, and core features"
+          },
+          {
+            "id": "10.5",
+            "title": "Prepare university-focused launch materials",
+            "status": "pending",
+            "description": "Create screenshots, descriptions, and assets targeting university students"
+          },
+          {
+            "id": "10.6",
+            "title": "Implement crash reporting",
+            "status": "pending",
+            "description": "Set up monitoring and reporting tools for app stability"
+          },
+          {
+            "id": "10.7",
+            "title": "Conduct campus-specific user testing",
+            "status": "pending",
+            "description": "Perform comprehensive testing with university students before launch"
+          }
+        ]
+      }
+    ],
+  "metadata": {
+    "projectName": "Up4It - Spontaneous Friend Finder",
+    "totalTasks": 10,
+    "sourceFile": "scripts/PRD.txt",
+    "generatedAt": "2023-11-09",
+    "lastUpdated": "2023-05-01"
+  }
+}

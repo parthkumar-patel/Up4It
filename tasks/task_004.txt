@@ -1,0 +1,43 @@
+# Task ID: 4
+# Title: Build swipe-based friend discovery UI with dark neumorphism design
+# Status: pending
+# Dependencies: 2, 3
+# Priority: high
+# Description: Create the core swiping interface for discovering potential friends with smooth animations using dark neumorphism components
+# Details:
+Create interactive prototypes for the swiping interface using dark neumorphism and card elements. Implement card-based UI for profile swiping with depth effects. Create smooth, physics-based animations for accept/reject gestures. Design and implement profile card layout showing user photos, bio, interests, and current activity status using the established design system. Add filtering options based on activity types and distance. Implement basic matching algorithm using proximity and shared interests with user privacy in mind. Create match notification UI with engaging animations. Ensure accessibility is maintained despite complex UI elements.
+
+# Test Strategy:
+Test swiping mechanics on various device sizes. Verify animation performance on lower-end devices. Ensure accessibility features work with the swiping interface. Test the matching algorithm with various user profiles and preferences. Verify privacy controls function properly in the discovery process. Conduct usability testing with diverse user groups. Test UI consistency with design system.
+
+# Subtasks:
+## 4.1. Design and prototype swiping interface [pending]
+### Dependencies: None
+### Description: Create interactive prototypes for card-based swiping UI using dark neumorphism design
+### Details:
+
+
+## 4.2. Develop animation system for swipe interactions [pending]
+### Dependencies: None
+### Description: Build physics-based animations for card movements, transitions, and micro-interactions
+### Details:
+
+
+## 4.3. Implement profile card UI components [pending]
+### Dependencies: None
+### Description: Create dark neumorphism card components displaying user details with design system elements
+### Details:
+
+
+## 4.4. Build filtering and matching algorithm [pending]
+### Dependencies: None
+### Description: Implement secure matching based on proximity, interests, and user preferences
+### Details:
+
+
+## 4.5. Create match notification experience [pending]
+### Dependencies: None
+### Description: Develop engaging notification UI with animations when users match
+### Details:
+
+

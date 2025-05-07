@@ -1,0 +1,49 @@
+# Task ID: 5
+# Title: Implement event creation and discovery with card layout
+# Status: pending
+# Dependencies: 3, 4
+# Priority: medium
+# Description: Build the system for users to create and discover time-limited events using card layouts with dark neumorphism for visual appeal
+# Details:
+Design event creation interface prototypes using card layouts with dark neumorphism for visual appeal. Implement the what/where/when input fields with intuitive UX. Use the design system components for consistent look and feel. Implement event type selection with predefined categories and emoji. Build 4-hour expiry timer system for events with proper security to prevent manipulation. Design event cards using dark neumorphism for depth and visual appeal. Include emoji + event title, location, time, action buttons (Pass, Remind, Join), and distance on cards. Implement event discovery based on location and interests with privacy controls. Create backend logic for event lifecycle management (active/expired/cancelled). Add location suggestion feature for event venues.
+
+# Test Strategy:
+Test event creation flow with usability testing. Verify expiry timer works correctly and is secure from tampering. Test event discovery with various location and interest combinations. Ensure expired events are properly handled. Verify location suggestions are relevant and accurate. Test security of event data. Validate UI renders consistently across devices.
+
+# Subtasks:
+## 5.1. Design event UI with card layout [pending]
+### Dependencies: None
+### Description: Create prototypes for event screens using card components with dark neumorphism for visual distinctiveness
+### Details:
+
+
+## 5.2. Implement event creation interface [pending]
+### Dependencies: None
+### Description: Build intuitive what/where/when input screens with design system components
+### Details:
+
+
+## 5.3. Develop secure event expiry system [pending]
+### Dependencies: None
+### Description: Create 4-hour timer functionality with server-side validation to prevent manipulation
+### Details:
+
+
+## 5.4. Create event discovery feed [pending]
+### Dependencies: None
+### Description: Implement visually appealing event discovery using dark neumorphism cards with emoji, title, location, time, action buttons, and distance
+### Details:
+
+
+## 5.5. Build event lifecycle management [pending]
+### Dependencies: None
+### Description: Develop backend logic for handling event states with proper security controls
+### Details:
+
+
+## 5.6. Implement event detail page [pending]
+### Dependencies: None
+### Description: Create detailed view with bold headers, embedded map with red pin, share code, and Join button
+### Details:
+
+

@@ -1,0 +1,55 @@
+# Task ID: 6
+# Title: Develop real-time messaging system with encryption
+# Status: pending
+# Dependencies: 4
+# Priority: medium
+# Description: Create the chat functionality between matched users with real-time updates and end-to-end encryption
+# Details:
+Design modern messaging UI prototypes using design system components with dark neumorphism. Implement WebSocket-based real-time messaging using Appwrite with end-to-end encryption for privacy. Create chat UI with conversation threads using dark neumorphism for message bubbles. Add online status indicators with proper privacy controls (opt-in). Implement message persistence for offline access with local encryption. Create match list view showing all active conversations using card layout. Add read receipts and typing indicators with user control options. Implement context-aware message templates to help start conversations. Design system for disappearing chats if no meetup occurs within the time window with proper security measures.
+
+# Test Strategy:
+Test real-time message delivery across devices. Verify offline message queuing and delivery. Test chat history persistence and encryption. Ensure notifications work for new messages. Verify disappearing chat functionality works as expected after the time window expires. Test security of the messaging system through penetration testing. Validate UI renders correctly across all supported devices.
+
+# Subtasks:
+## 6.1. Design messaging UI with dark neumorphism elements [pending]
+### Dependencies: None
+### Description: Create prototypes for chat interface with dark neumorphism message bubbles and card layout
+### Details:
+
+
+## 6.2. Implement end-to-end encrypted messaging [pending]
+### Dependencies: None
+### Description: Build secure WebSocket-based messaging with encryption for privacy protection
+### Details:
+
+
+## 6.3. Develop conversation list view [pending]
+### Dependencies: None
+### Description: Create match list using card layout showing active conversations
+### Details:
+
+
+## 6.4. Build offline message handling with encryption [pending]
+### Dependencies: None
+### Description: Implement secure message persistence with local storage encryption
+### Details:
+
+
+## 6.5. Create conversation presence features [pending]
+### Dependencies: None
+### Description: Add typing indicators and read receipts with privacy controls
+### Details:
+
+
+## 6.6. Implement conversation starters [pending]
+### Dependencies: None
+### Description: Build context-aware message templates to facilitate initial conversation
+### Details:
+
+
+## 6.7. Develop disappearing chat functionality [pending]
+### Dependencies: None
+### Description: Create secure time-based chat expiry system with proper data deletion
+### Details:
+
+
