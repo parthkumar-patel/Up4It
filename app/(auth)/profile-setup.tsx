@@ -48,6 +48,12 @@ export default function ProfileSetupScreen() {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
   const pickImage = async () => {
+    // Request permission first
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
+      return;
+    }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -55,7 +61,9 @@ export default function ProfileSetupScreen() {
       quality: 1,
     });
 
-    if (!result.canceled) {
+    console.log('ImagePicker result:', result); // Debug log
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setCustomImage(result.assets[0].uri);
       setSelectedAvatar(null);
     }
@@ -117,10 +125,13 @@ export default function ProfileSetupScreen() {
           <StepIndicator currentStep={currentStep} totalSteps={3} />
 
           {currentStep === 1 ? (
-            <View style={styles.avatarSection}>
+            <View style={styles.avatarSection} pointerEvents="box-none">
               <Pressable 
                 style={styles.cameraButton}
-                onPress={pickImage}
+                onPress={() => {
+                  console.log('Camera button pressed');
+                  pickImage();
+                }}
               >
                 {customImage ? (
                   <Image 
