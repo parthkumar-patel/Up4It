@@ -79,7 +79,7 @@ export default function ForgotPasswordScreen() {
               </Text>
               <Button 
                 title="Back to Sign In" 
-                onPress={() => router.push('/(auth)/')}
+                onPress={() => router.push('/(auth)')}
                 style={styles.backButton}
               />
             </Animated.View>

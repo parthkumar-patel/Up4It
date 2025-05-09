@@ -68,7 +68,7 @@ export default function NotificationsScreen() {
     setUserNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
   };
   
-  const handleNotificationPress = (id) => {
+  const handleNotificationPress = (id: number) => {
     setUserNotifications(prev => 
       prev.map(n => n.id === id ? { ...n, isRead: true } : n)
     );
@@ -96,7 +96,7 @@ export default function NotificationsScreen() {
         renderItem={({ item, index }) => (
           <Animated.View entering={FadeInUp.delay(200 + index * 50).duration(500)}>
             <NotificationItem
-              type={item.type}
+              type={item.type as 'friendJoined' | 'reminder' | 'invitation' | 'update'}
               title={item.title}
               message={item.message}
               time={item.time}
