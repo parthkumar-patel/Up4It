@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeInUp } from 'react-native-reanimated';
@@ -6,53 +6,62 @@ import { Text } from '@/components/Text';
 import { Button } from '@/components/Button';
 import { IconButton } from '@/components/IconButton';
 import { ArrowLeft } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function WelcomeScreen() {
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <IconButton
-          icon={<ArrowLeft size={24} color="#FFFFFF" />}
-          onPress={() => router.back()}
-        />
-      </View>
-      
-      <Animated.View 
-        entering={FadeIn.delay(300).duration(800)}
-        style={styles.content}
-      >
-        <View style={styles.welcomeContainer}>
-          <Animated.View entering={FadeInUp.delay(500).duration(800)}>
-            <Text style={styles.welcome}>Welcome to</Text>
-            <Text style={styles.appName}>Up4It</Text>
-          </Animated.View>
-          
-          <Animated.View entering={FadeInUp.delay(700).duration(800)}>
-            <Text style={styles.description}>
-              Discover, join, and create campus events with your UBC community
-            </Text>
-          </Animated.View>
+    <LinearGradient
+      colors={['#1A1F2D', '#1A1F2B']}
+      style={styles.gradient}
+    >
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.header}>
+          <IconButton
+            icon={<ArrowLeft size={24} color="#FFFFFF" />}
+            onPress={() => router.back()}
+          />
         </View>
         
         <Animated.View 
-          entering={FadeInUp.delay(900).duration(800)}
-          style={styles.buttonContainer}
+          entering={FadeIn.delay(300).duration(800)}
+          style={styles.content}
         >
-          <Button
-            title="Continue with UBC Email"
-            onPress={() => router.push('/(auth)/')}
-            style={styles.button}
-          />
+          <View style={styles.welcomeContainer}>
+            <Animated.View entering={FadeInUp.delay(500).duration(800)}>
+              <Text style={styles.welcome}>Welcome to</Text>
+              <Text style={styles.appName}>Up4It</Text>
+            </Animated.View>
+            
+            <Animated.View entering={FadeInUp.delay(700).duration(800)}>
+              <Text style={styles.description}>
+                Discover, join, and create campus events with your UBC community
+              </Text>
+            </Animated.View>
+          </View>
+          
+          <Animated.View 
+            entering={FadeInUp.delay(900).duration(800)}
+            style={styles.buttonContainer}
+          >
+            <Button
+              title="Sign in with UBC Email"
+              onPress={() => router.push('/(auth)')}
+              style={styles.button}
+              variant="secondary"
+            />
+          </Animated.View>
         </Animated.View>
-      </Animated.View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#121212',
   },
   header: {
     paddingHorizontal: 20,
@@ -96,5 +105,8 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    borderWidth: 0,
+    borderRadius: 100,
   },
 });
