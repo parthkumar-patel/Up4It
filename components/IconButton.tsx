@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: '#FFFFFF',
-    fontSize: 10,
-    fontFamily: 'Inter-Bold',
+    fontSize: 14,
+    fontFamily: 'Satoshi-Bold',
   },
 });

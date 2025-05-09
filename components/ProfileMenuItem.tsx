@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   title: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 16,
+    fontFamily: 'Satoshi-Medium',
+    fontSize: 18,
     color: '#FFFFFF',
   },
   rightContainer: {

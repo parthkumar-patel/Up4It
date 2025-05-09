@@ -21,14 +21,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   value: {
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'Satoshi-Bold',
     fontSize: 24,
     color: '#FFFFFF',
   },
   label: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 13,
-    color: '#9BA3AF',
+    fontFamily: 'Satoshi-Regular',
+    fontSize: 14,
+    color: '#F0F0F0',
     marginTop: 4,
     textAlign: 'center',
   },

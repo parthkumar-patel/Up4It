@@ -86,10 +86,12 @@ export function Button({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 8,
+    borderRadius: 24, // Pill style
+    minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    paddingHorizontal: 24,
   },
   content: {
     flexDirection: 'row',
@@ -105,15 +107,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   primaryButton: {
-    backgroundColor: '#668EFF',
+    backgroundColor: '#4F46E5', // Accent Blue
+    borderWidth: 1,
+    borderColor: 'linear-gradient(90deg, #4F46E5, #577AEA)', // Simulate gradient border
   },
   secondaryButton: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: '#668EFF',
+    borderColor: '#4F46E5',
   },
   dangerButton: {
-    backgroundColor: '#EF4444',
+    backgroundColor: '#F55855',
   },
   buttonPressed: {
     opacity: 0.8,
@@ -122,16 +126,20 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   text: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 16,
+    fontFamily: 'Satoshi-Medium',
+    fontSize: 18,
   },
   primaryText: {
     color: '#FFFFFF',
   },
   secondaryText: {
+    fontFamily: 'Satoshi-Regular',
+    fontSize: 16,
     color: '#668EFF',
   },
   dangerText: {
+    fontFamily: 'Satoshi-Regular',
+    fontSize: 14,
     color: '#FFFFFF',
   },
   leftIcon: {

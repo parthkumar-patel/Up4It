@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: 64,
+    fontFamily: 'Satoshi-Bold',
+    fontSize: 80,
     color: '#FFFFFF',
     letterSpacing: -1,
   },
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   buttonText: {
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'Satoshi-SemiBold',
     fontSize: 16,
     color: '#FFFFFF',
   },

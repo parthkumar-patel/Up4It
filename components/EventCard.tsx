@@ -64,10 +64,15 @@ export function EventCard({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#1A1A1A',
-    borderRadius: 12,
+    backgroundColor: '#2A2A2A',
+    borderRadius: 10,
     overflow: 'hidden',
-    marginBottom: 16,
+    marginBottom: 24, // external padding
+    shadowColor: 'rgba(0,0,0,0.25)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 4,
   },
   pressed: {
     opacity: 0.8,
@@ -78,11 +83,11 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 12,
+    padding: 16, // internal padding
   },
   title: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
+    fontFamily: 'Satoshi-Medium',
+    fontSize: 18,
     color: '#FFFFFF',
     marginBottom: 8,
   },
@@ -95,9 +100,9 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   infoText: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#9BA3AF',
+    fontFamily: 'Satoshi-Regular',
+    fontSize: 16,
+    color: '#F0F0F0',
   },
   footer: {
     flexDirection: 'row',
@@ -116,8 +121,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   categoryText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 12,
-    color: '#E5E7EB',
+    fontFamily: 'Satoshi-Regular',
+    fontSize: 14,
+    color: '#F0F0F0',
   },
 });

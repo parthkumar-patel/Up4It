@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 44,
-    color: '#FFFFFF',
-    fontFamily: 'Inter-Regular',
+    color: '#F0F0F0',
+    fontFamily: 'Satoshi-Regular',
     fontSize: 16,
   },
   rightIconContainer: {

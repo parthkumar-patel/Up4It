@@ -143,8 +143,8 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   headerTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 18,
+    fontFamily: 'Satoshi-Bold',
+    fontSize: 36,
     color: '#FFFFFF',
   },
   headerRight: {
@@ -167,8 +167,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   eventTitle: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 32,
+    fontFamily: 'Satoshi-Bold',
+    fontSize: 36,
     color: '#FFFFFF',
   },
   detailsContainer: {
@@ -180,13 +180,10 @@ const styles = StyleSheet.create({
   detailRow: {
     marginBottom: 20,
   },
-  detailRow: {
-    marginBottom: 20,
-  },
   detailLabel: {
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Satoshi-Regular',
     fontSize: 14,
-    color: '#666666',
+    color: '#F0F0F0',
     marginBottom: 8,
   },
   detailContent: {
@@ -197,8 +194,8 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   detailText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 16,
+    fontFamily: 'Satoshi-Medium',
+    fontSize: 18,
     color: '#FFFFFF',
   },
   tagSection: {
@@ -218,15 +215,15 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   tagText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 16,
-    color: '#FFFFFF',
+    fontFamily: 'Satoshi-Regular',
+    fontSize: 14,
+    color: '#F0F0F0',
   },
   shareSection: {
     marginBottom: 24,
   },
   shareCode: {
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Satoshi-Bold',
     fontSize: 24,
     color: '#FFFFFF',
   },
@@ -238,9 +235,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   joinButtonText: {
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'Satoshi-Bold',
     fontSize: 18,
-    color: '#000000',
+    color: '#1A1A1A',
   },
   errorContainer: {
     flex: 1,
@@ -248,8 +245,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   errorText: {
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Satoshi-Medium',
     fontSize: 16,
-    color: '#666666',
+    color: '#F55855',
   },
 });
