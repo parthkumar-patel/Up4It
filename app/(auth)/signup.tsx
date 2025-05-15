@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { View, StyleSheet, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, StyleSheet, Pressable, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { Text } from '@/components/Text';
 import { Button } from '@/components/Button';
@@ -8,27 +10,56 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconButton } from '@/components/IconButton';
 import { ArrowLeft } from 'lucide-react-native';
 import Animated, { FadeIn, FadeInUp } from 'react-native-reanimated';
+import { account } from '@/lib/appwrite';
+import { ID } from 'appwrite';
 
 export default function SignupScreen() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ firstName?: string; lastName?: string; email?: string; password?: string; confirmPassword?: string }>({});
 
-  const handleSignUp = () => {
-    if (!email.endsWith('@ubc.ca') && !email.endsWith('@alumni.ubc.ca')) {
-      alert('Please use a valid UBC email address');
-      return;
-    }
-    
+  const validateForm = () => {
+    const newErrors: typeof errors = {};
+    if (!firstName.trim()) newErrors.firstName = 'First name is required';
+    if (!lastName.trim()) newErrors.lastName = 'Last name is required';
+    if (!email) newErrors.email = 'Email is required';
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) newErrors.email = 'Enter a valid email';
+    else if (!email.endsWith('@student.ubc.ca') && !email.endsWith('@alumni.ubc.ca')) newErrors.email = 'Use a valid UBC student or alumni email';
+    if (!password) newErrors.password = 'Password is required';
+    else if (password.length < 8) newErrors.password = 'Password must be at least 8 characters';
+    else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) newErrors.password = 'Use uppercase, lowercase, and numbers';
+    if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSignUp = async () => {
+    if (!validateForm()) return;
+
     setLoading(true);
-    
-    // Simulate signup API call
-    setTimeout(() => {
+    try {
+      // Create user account in Appwrite
+      const user = await account.create(ID.unique(), email, password, `${firstName} ${lastName}`);
+      // Registration successful, prompt user to verify email
+      Alert.alert(
+        'Registration Successful',
+        'Please check your email to verify your account before logging in.',
+        [{ text: 'Go to Login', onPress: () => router.replace('/(auth)') }]
+      );
+    } catch (error: any) {
+      let errorMessage = 'Registration failed. Please try again.';
+      if (error.message.includes('already exists')) {
+        errorMessage = 'This email is already registered';
+      }
+      Alert.alert('Registration Error', errorMessage);
+      console.error('Signup error:', error);
+    } finally {
       setLoading(false);
-      router.replace('/(tabs)');
-    }, 1500);
+    }
   };
 
   return (
@@ -57,6 +88,7 @@ export default function SignupScreen() {
                 value={firstName}
                 onChangeText={setFirstName}
                 placeholder="Enter your first name"
+                error={errors.firstName}
               />
               
               <TextInput
@@ -65,16 +97,18 @@ export default function SignupScreen() {
                 onChangeText={setLastName}
                 placeholder="Enter your last name"
                 containerStyle={styles.inputSpacing}
+                error={errors.lastName}
               />
               
               <TextInput
                 label="UBC Email"
                 value={email}
                 onChangeText={setEmail}
-                placeholder="youremail@ubc.ca"
+                placeholder="youremail@student.ubc.ca"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 containerStyle={styles.inputSpacing}
+                error={errors.email}
               />
               
               <TextInput
@@ -84,6 +118,17 @@ export default function SignupScreen() {
                 placeholder="Minimum 8 characters"
                 secureTextEntry
                 containerStyle={styles.inputSpacing}
+                error={errors.password}
+              />
+
+              <TextInput
+                label="Confirm Password"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder="Re-enter your password"
+                secureTextEntry
+                containerStyle={styles.inputSpacing}
+                error={errors.confirmPassword}
               />
               
               <Text style={styles.termsText}>
